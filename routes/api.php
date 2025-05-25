@@ -32,22 +32,36 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::get('/encryption/public-key', [EncryptionController::class, 'getPublicKey']);
+Route::post('/suggestions', [SuggestionController::class, 'store']); // Public route for submitting suggestions
+Route::get('/events', [EventController::class, 'index']); // Public route for listing events
+Route::get('/galleries', [GalleryController::class, 'index']); // Public route for listing galleries
+Route::post('/donations', [DonationController::class, 'store']); // Public route for making donations
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
 
-    // Events routes
-    Route::apiResource('events', EventController::class);
+    // Events routes (except index)
+    Route::controller(EventController::class)->group(function () {
+        Route::post('/events', 'store');
+        Route::get('/events/{event}', 'show');
+        Route::put('/events/{event}', 'update');
+        Route::delete('/events/{event}', 'destroy');
+    });
 
     // Users routes
     Route::apiResource('users', UserController::class);
 
-    // Donations routes
-    Route::apiResource('donations', DonationController::class);
-    Route::get('/donations/total', [DonationController::class, 'getTotalDonations']);
-    Route::get('/donations/recent', [DonationController::class, 'getRecentDonations']);
+    // Donations routes (except store)
+    Route::controller(DonationController::class)->group(function () {
+        Route::get('/donations', 'index');
+        Route::get('/donations/{donation}', 'show');
+        Route::put('/donations/{donation}', 'update');
+        Route::delete('/donations/{donation}', 'destroy');
+        Route::get('/donations/total', 'getTotalDonations');
+        Route::get('/donations/recent', 'getRecentDonations');
+    });
 
     // Email template routes
     Route::get('/email-template', [EmailTemplateController::class, 'show']);
@@ -62,12 +76,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/recent-donations', [DashboardController::class, 'getRecentDonations']);
     });
 
-    // Gallery routes
-    Route::apiResource('categories', CategoryController::class);
-    Route::apiResource('galleries', GalleryController::class);
+    // Gallery routes (except index)
+    Route::controller(GalleryController::class)->group(function () {
+        Route::post('/galleries', 'store');
+        Route::get('/galleries/{gallery}', 'show');
+        Route::put('/galleries/{gallery}', 'update');
+        Route::delete('/galleries/{gallery}', 'destroy');
+    });
 
-    // Suggestion box routes
-    Route::post('/suggestions', [SuggestionController::class, 'store']); // Public route for submitting suggestions
+    // Categories routes
+    Route::apiResource('categories', CategoryController::class);
 
     // Admin routes for suggestions
     Route::get('/suggestions', [SuggestionController::class, 'index']);

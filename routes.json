@@ -154,6 +154,319 @@
                     }
                 }
             }
+        },
+        "events": {
+            "list": {
+                "url": "/events",
+                "method": "GET",
+                "protected": true,
+                "description": "Get list of events with pagination",
+                "parameters": {
+                    "search": {
+                        "type": "string",
+                        "required": false,
+                        "description": "Search in title, description, and location"
+                    },
+                    "status": {
+                        "type": "boolean",
+                        "required": false,
+                        "description": "Filter by event status"
+                    },
+                    "date_from": {
+                        "type": "date",
+                        "required": false,
+                        "format": "Y-m-d",
+                        "description": "Filter by start date"
+                    },
+                    "date_to": {
+                        "type": "date",
+                        "required": false,
+                        "format": "Y-m-d",
+                        "description": "Filter by end date"
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "required": false,
+                        "default": 10,
+                        "description": "Items per page"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "List of events",
+                        "returns": {
+                            "data": "array",
+                            "meta": "object"
+                        }
+                    }
+                }
+            },
+            "create": {
+                "url": "/events",
+                "method": "POST",
+                "protected": true,
+                "description": "Create a new event",
+                "parameters": {
+                    "title": {
+                        "type": "string",
+                        "required": true,
+                        "max": 255,
+                        "description": "Event title"
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": true,
+                        "description": "Event description"
+                    },
+                    "event_date": {
+                        "type": "date",
+                        "required": true,
+                        "format": "Y-m-d",
+                        "description": "Event date"
+                    },
+                    "event_time": {
+                        "type": "time",
+                        "required": true,
+                        "format": "H:i",
+                        "description": "Event time"
+                    },
+                    "venue": {
+                        "type": "string",
+                        "required": true,
+                        "max": 255,
+                        "description": "Event venue"
+                    },
+                    "image": {
+                        "type": "file",
+                        "required": false,
+                        "mimes": ["jpeg", "png", "jpg"],
+                        "max_size": "2048",
+                        "description": "Event image"
+                    }
+                }
+            }
+        },
+        "donations": {
+            "list": {
+                "url": "/donations",
+                "method": "GET",
+                "protected": true,
+                "description": "Get list of donations",
+                "parameters": {
+                    "search": {
+                        "type": "string",
+                        "required": false,
+                        "description": "Search in donor name or email"
+                    },
+                    "status": {
+                        "type": "string",
+                        "required": false,
+                        "enum": ["pending", "completed", "failed"],
+                        "description": "Filter by donation status"
+                    },
+                    "min_amount": {
+                        "type": "numeric",
+                        "required": false,
+                        "description": "Minimum donation amount"
+                    },
+                    "max_amount": {
+                        "type": "numeric",
+                        "required": false,
+                        "description": "Maximum donation amount"
+                    }
+                }
+            },
+            "create": {
+                "url": "/donations",
+                "method": "POST",
+                "protected": true,
+                "description": "Create a new donation",
+                "parameters": {
+                    "amount": {
+                        "type": "numeric",
+                        "required": true,
+                        "min": 1,
+                        "description": "Donation amount"
+                    },
+                    "payment_method": {
+                        "type": "string",
+                        "required": true,
+                        "enum": ["credit_card", "debit_card", "upi"],
+                        "description": "Payment method"
+                    },
+                    "donor_name": {
+                        "type": "string",
+                        "required": true,
+                        "max": 255,
+                        "description": "Donor's name"
+                    },
+                    "donor_email": {
+                        "type": "string",
+                        "required": true,
+                        "validation": "email",
+                        "description": "Donor's email"
+                    }
+                }
+            }
+        },
+        "categories": {
+            "list": {
+                "url": "/categories",
+                "method": "GET",
+                "protected": true,
+                "description": "Get list of categories",
+                "parameters": {
+                    "search": {
+                        "type": "string",
+                        "required": false,
+                        "description": "Search in category name"
+                    }
+                }
+            },
+            "create": {
+                "url": "/categories",
+                "method": "POST",
+                "protected": true,
+                "description": "Create a new category",
+                "parameters": {
+                    "name": {
+                        "type": "string",
+                        "required": true,
+                        "max": 255,
+                        "description": "Category name"
+                    },
+                    "description": {
+                        "type": "string",
+                        "required": false,
+                        "description": "Category description"
+                    }
+                }
+            }
+        },
+        "dashboard": {
+            "stats": {
+                "url": "/dashboard/stats",
+                "method": "GET",
+                "protected": true,
+                "description": "Get dashboard statistics",
+                "parameters": {
+                    "date_from": {
+                        "type": "date",
+                        "required": false,
+                        "format": "Y-m-d",
+                        "description": "Start date for stats"
+                    },
+                    "date_to": {
+                        "type": "date",
+                        "required": false,
+                        "format": "Y-m-d",
+                        "description": "End date for stats"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Dashboard statistics",
+                        "returns": {
+                            "total_donations": "numeric",
+                            "total_events": "integer",
+                            "active_users": "integer",
+                            "recent_activities": "array"
+                        }
+                    }
+                }
+            }
+        },
+        "suggestions": {
+            "create": {
+                "url": "/suggestions",
+                "method": "POST",
+                "protected": false,
+                "description": "Submit a new suggestion",
+                "parameters": {
+                    "name": {
+                        "type": "string",
+                        "required": true,
+                        "max": 255,
+                        "description": "Suggester's name"
+                    },
+                    "email": {
+                        "type": "string",
+                        "required": true,
+                        "validation": "email",
+                        "description": "Suggester's email"
+                    },
+                    "subject": {
+                        "type": "string",
+                        "required": true,
+                        "max": 255,
+                        "description": "Suggestion subject"
+                    },
+                    "message": {
+                        "type": "string",
+                        "required": true,
+                        "description": "Suggestion message"
+                    }
+                }
+            },
+            "list": {
+                "url": "/suggestions",
+                "method": "GET",
+                "protected": true,
+                "description": "Get list of suggestions (Admin only)",
+                "parameters": {
+                    "status": {
+                        "type": "string",
+                        "required": false,
+                        "enum": ["new", "read", "archived"],
+                        "description": "Filter by suggestion status"
+                    }
+                }
+            }
+        },
+        "email-templates": {
+            "list": {
+                "url": "/email-templates",
+                "method": "GET",
+                "protected": true,
+                "description": "Get list of email templates",
+                "parameters": {
+                    "type": {
+                        "type": "string",
+                        "required": false,
+                        "enum": [
+                            "welcome",
+                            "donation",
+                            "event",
+                            "password_reset"
+                        ],
+                        "description": "Filter by template type"
+                    }
+                }
+            },
+            "update": {
+                "url": "/email-templates/{id}",
+                "method": "PUT",
+                "protected": true,
+                "description": "Update an email template",
+                "parameters": {
+                    "subject": {
+                        "type": "string",
+                        "required": true,
+                        "max": 255,
+                        "description": "Email subject"
+                    },
+                    "body": {
+                        "type": "string",
+                        "required": true,
+                        "description": "Email body content (HTML)"
+                    },
+                    "variables": {
+                        "type": "array",
+                        "required": false,
+                        "description": "Template variables"
+                    }
+                }
+            }
         }
     },
     "error_responses": {

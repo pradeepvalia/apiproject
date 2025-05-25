@@ -202,6 +202,167 @@
             ]
         },
         {
+            "name": "Users",
+            "description": "User management endpoints",
+            "item": [
+                {
+                    "name": "List Users",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/users?search=&role=&is_active=&per_page=10",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "users"],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "description": "Search in name, email"
+                                },
+                                {
+                                    "key": "role",
+                                    "value": "",
+                                    "description": "Filter by role (admin/user)"
+                                },
+                                {
+                                    "key": "is_active",
+                                    "value": "",
+                                    "description": "Filter by active status (true/false)"
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "10",
+                                    "description": "Items per page"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create User",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"New User\",           // required, string, max:255\n    \"email\": \"new@example.com\",   // required, valid email, unique\n    \"password\": \"password123\",     // required, min:8\n    \"password_confirmation\": \"password123\", // required, must match password\n    \"phone\": \"1234567890\",        // required, string, max:20\n    \"address\": \"123 Street\",      // optional, string, max:255\n    \"role\": \"user\",              // optional, enum: admin,user (default: user)\n    \"is_active\": true             // optional, boolean (default: true)\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/users",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "users"]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Single User",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/users/{id}",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "users", "{id}"]
+                        }
+                    }
+                },
+                {
+                    "name": "Update User",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Updated Name\",       // optional, string, max:255\n    \"email\": \"update@example.com\", // optional, valid email, unique\n    \"phone\": \"9876543210\",        // optional, string, max:20\n    \"address\": \"New Address\",      // optional, string, max:255\n    \"role\": \"admin\",              // optional, enum: admin,user\n    \"is_active\": false             // optional, boolean\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/users/{id}",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "users", "{id}"]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete User",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/users/{id}",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "users", "{id}"]
+                        }
+                    }
+                }
+            ]
+        },
+        {
             "name": "User Management",
             "description": "User profile management endpoints",
             "item": [

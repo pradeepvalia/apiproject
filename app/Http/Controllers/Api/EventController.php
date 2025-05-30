@@ -15,31 +15,33 @@ class EventController extends Controller
     {
         $query = Event::query();
 
-        // Search by title, description, or location
-        if ($request->has('search')) {
+        // Only apply search filter if search term is provided and not empty
+        if ($request->filled('search')) {
             $searchTerm = $request->search;
             $query->where(function($q) use ($searchTerm) {
                 $q->where('title', 'like', "%{$searchTerm}%")
                   ->orWhere('description', 'like', "%{$searchTerm}%")
-                  ->orWhere('location', 'like', "%{$searchTerm}%");
+                  ->orWhere('venue', 'like', "%{$searchTerm}%");
             });
         }
 
-        // Filter by status
-        if ($request->has('status')) {
+        // Only apply status filter if status is provided and not empty
+        if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        // Date range filter
-        if ($request->has('date_from')) {
+        // Only apply date filter if date_from is provided and not empty
+        if ($request->filled('date_from')) {
             $query->whereDate('event_date', '>=', $request->date_from);
         }
-        if ($request->has('date_to')) {
+
+        // Only apply date filter if date_to is provided and not empty
+        if ($request->filled('date_to')) {
             $query->whereDate('event_date', '<=', $request->date_to);
         }
 
-        // Filter by event type
-        if ($request->has('event_type')) {
+        // Only apply event type filter if event_type is provided and not empty
+        if ($request->filled('event_type')) {
             $query->where('event_type', $request->event_type);
         }
 
@@ -49,6 +51,14 @@ class EventController extends Controller
         $query->orderBy($sortBy, $sortDirection);
 
         $events = $query->paginate($request->get('per_page', 10));
+
+        // Add image URLs to each event
+        foreach ($events as $event) {
+            if ($event->image) {
+                $event->image_url = url('storage/' . $event->image);
+            }
+        }
+
         return response()->json($events);
     }
 
@@ -82,6 +92,11 @@ class EventController extends Controller
 
         $event = Event::create($data);
 
+        // Add image URL to response
+        if ($event->image) {
+            $event->image_url = url('storage/' . $event->image);
+        }
+
         return response()->json([
             'message' => 'Event created successfully',
             'event' => $event
@@ -90,6 +105,10 @@ class EventController extends Controller
 
     public function show(Event $event)
     {
+        // Add image URL to response
+        if ($event->image) {
+            $event->image_url = url('storage/' . $event->image);
+        }
         return response()->json($event);
     }
 
@@ -128,6 +147,11 @@ class EventController extends Controller
 
         $event->update($data);
 
+        // Add image URL to response
+        if ($event->image) {
+            $event->image_url = url('storage/' . $event->image);
+        }
+
         return response()->json([
             'message' => 'Event updated successfully',
             'event' => $event
@@ -144,6 +168,63 @@ class EventController extends Controller
 
         return response()->json([
             'message' => 'Event deleted successfully'
+        ]);
+    }
+
+    public function publicList(Request $request)
+    {
+        $query = Event::query();
+
+        // Only apply status filter if status is provided and not empty
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        } else {
+            // Default to active events if no status is provided
+            $query->where('status', 1);
+        }
+
+        // Only apply date filter if date_from is provided and not empty
+        if ($request->filled('date_from')) {
+            $query->whereDate('event_date', '>=', $request->date_from);
+        }
+
+        // Only apply date filter if date_to is provided and not empty
+        if ($request->filled('date_to')) {
+            $query->whereDate('event_date', '<=', $request->date_to);
+        }
+
+        // Only apply search filter if search term is provided and not empty
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('title', 'like', "%{$searchTerm}%")
+                  ->orWhere('description', 'like', "%{$searchTerm}%")
+                  ->orWhere('venue', 'like', "%{$searchTerm}%");
+            });
+        }
+
+        // Only apply event type filter if event_type is provided and not empty
+        if ($request->filled('event_type')) {
+            $query->where('event_type', $request->event_type);
+        }
+
+        // Sort by
+        $sortBy = $request->get('sort_by', 'event_date');
+        $sortDirection = $request->get('sort_direction', 'asc');
+        $query->orderBy($sortBy, $sortDirection);
+
+        $events = $query->paginate($request->get('per_page', 10));
+
+        // Add image URLs to each event
+        foreach ($events as $event) {
+            if ($event->image) {
+                $event->image_url = url('storage/' . $event->image);
+            }
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $events
         ]);
     }
 }

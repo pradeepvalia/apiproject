@@ -87,4 +87,35 @@ class CategoryController extends Controller
             'message' => 'Category deleted successfully'
         ]);
     }
+
+    /**
+     * Display a listing of active categories for public access.
+     */
+    public function publicList(Request $request)
+    {
+        $query = Category::with(['galleries' => function($query) {
+            $query->where('status', 'active');
+        }])->where('status', 'active');
+
+        // Search by name or description
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('name', 'like', "%{$searchTerm}%")
+                  ->orWhere('description', 'like', "%{$searchTerm}%");
+            });
+        }
+
+        // Sort by
+        $sortBy = $request->get('sort_by', 'name');
+        $sortDirection = $request->get('sort_direction', 'asc');
+        $query->orderBy($sortBy, $sortDirection);
+
+        $categories = $query->paginate($request->get('per_page', 10));
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $categories
+        ]);
+    }
 }

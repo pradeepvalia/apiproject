@@ -22,7 +22,7 @@ class DonationController extends Controller
         $query = Donation::with('user');
 
         // Search by donor name, email, or transaction ID
-        if ($request->has('search')) {
+        if ($request->filled('search')) {
             $searchTerm = $request->search;
             $query->where(function($q) use ($searchTerm) {
                 $q->where('donor_name', 'like', "%{$searchTerm}%")
@@ -32,28 +32,28 @@ class DonationController extends Controller
         }
 
         // Filter by payment status
-        if ($request->has('payment_status')) {
+        if ($request->filled('payment_status')) {
             $query->where('payment_status', $request->payment_status);
         }
 
         // Filter by payment method
-        if ($request->has('payment_method')) {
+        if ($request->filled('payment_method')) {
             $query->where('payment_method', $request->payment_method);
         }
 
         // Amount range filter
-        if ($request->has('min_amount')) {
+        if ($request->filled('min_amount')) {
             $query->where('amount', '>=', $request->min_amount);
         }
-        if ($request->has('max_amount')) {
+        if ($request->filled('max_amount')) {
             $query->where('amount', '<=', $request->max_amount);
         }
 
         // Date range filter
-        if ($request->has('date_from')) {
+        if ($request->filled('date_from')) {
             $query->whereDate('created_at', '>=', $request->date_from);
         }
-        if ($request->has('date_to')) {
+        if ($request->filled('date_to')) {
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 

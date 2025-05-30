@@ -15,7 +15,7 @@ class UserController extends Controller
         $query = User::query();
 
         // Search functionality
-        if ($request->has('search')) {
+        if ($request->filled('search')) {
             $searchTerm = $request->search;
             $query->where(function($q) use ($searchTerm) {
                 $q->where('name', 'like', "%{$searchTerm}%")
@@ -23,6 +23,16 @@ class UserController extends Controller
                   ->orWhere('phone', 'like', "%{$searchTerm}%")
                   ->orWhere('address', 'like', "%{$searchTerm}%");
             });
+        }
+
+        // Filter by role if provided
+        if ($request->filled('role')) {
+            $query->where('role', $request->role);
+        }
+
+        // Filter by active status if provided
+        if ($request->filled('is_active')) {
+            $query->where('is_active', $request->is_active);
         }
 
         // Sort functionality

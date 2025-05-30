@@ -31,6 +31,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('password.email');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset');
 Route::get('/encryption/public-key', [EncryptionController::class, 'getPublicKey']);
 Route::post('/suggestions', [SuggestionController::class, 'store']); // Public route for submitting suggestions
 Route::get('/events', [EventController::class, 'index']); // Public route for listing events

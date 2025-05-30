@@ -198,6 +198,146 @@
                             "body": "{\n    \"id\": 1,\n    \"name\": \"Test User\",\n    \"email\": \"test@example.com\",\n    \"phone\": \"1234567890\",\n    \"address\": \"123 Test St\",\n    \"is_active\": true,\n    \"created_at\": \"2024-05-25T11:00:00.000000Z\",\n    \"updated_at\": \"2024-05-25T11:00:00.000000Z\"\n}"
                         }
                     ]
+                },
+                {
+                    "name": "Forgot Password",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"test@example.com\"    // required, valid email that exists in the system\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/forgot-password",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "forgot-password"]
+                        },
+                        "description": "Request a password reset link to be sent to the user's email"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"email\": \"test@example.com\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/forgot-password"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"message\": \"Password reset link sent to your email\"\n}"
+                        },
+                        {
+                            "name": "Validation Error",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"email\": \"invalid-email\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/forgot-password"
+                                }
+                            },
+                            "status": "Unprocessable Entity",
+                            "code": 422,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"message\": \"Validation failed\",\n    \"errors\": {\n        \"email\": [\n            \"The email must be a valid email address.\"\n        ]\n    }\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Reset Password",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"test@example.com\",    // required, valid email\n    \"token\": \"reset_token\",         // required, token from email\n    \"password\": \"new_password\",     // required, min:8\n    \"password_confirmation\": \"new_password\" // required, must match password\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/reset-password",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "reset-password"]
+                        },
+                        "description": "Reset user's password using the token received via email"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"email\": \"test@example.com\",\n    \"token\": \"reset_token\",\n    \"password\": \"new_password\",\n    \"password_confirmation\": \"new_password\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/reset-password"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"message\": \"Password reset successfully\"\n}"
+                        },
+                        {
+                            "name": "Validation Error",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"email\": \"test@example.com\",\n    \"token\": \"reset_token\",\n    \"password\": \"short\",\n    \"password_confirmation\": \"short\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/reset-password"
+                                }
+                            },
+                            "status": "Unprocessable Entity",
+                            "code": 422,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"message\": \"Validation failed\",\n    \"errors\": {\n        \"password\": [\n            \"The password must be at least 8 characters.\"\n        ]\n    }\n}"
+                        }
+                    ]
                 }
             ]
         },

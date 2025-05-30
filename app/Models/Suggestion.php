@@ -14,6 +14,7 @@ class Suggestion extends Model
         'name',
         'email',
         'phone',
+        'subject',
         'description',
         'is_read'
     ];

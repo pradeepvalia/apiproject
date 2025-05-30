@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Gallery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class GalleryController extends Controller
 {
@@ -12,8 +13,8 @@ class GalleryController extends Controller
     {
         $query = Gallery::with('category');
 
-        // Search by title or description
-        if ($request->has('search')) {
+        // Only apply search filter if search term is provided and not empty
+        if ($request->filled('search')) {
             $searchTerm = $request->search;
             $query->where(function($q) use ($searchTerm) {
                 $q->where('title', 'like', "%{$searchTerm}%")
@@ -21,13 +22,13 @@ class GalleryController extends Controller
             });
         }
 
-        // Filter by category
-        if ($request->has('category_id')) {
+        // Only apply category filter if category_id is provided and not empty
+        if ($request->filled('category_id')) {
             $query->where('category_id', $request->category_id);
         }
 
-        // Filter by status
-        if ($request->has('status')) {
+        // Only apply status filter if status is provided and not empty
+        if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
@@ -37,74 +38,100 @@ class GalleryController extends Controller
         $query->orderBy($sortBy, $sortDirection);
 
         $galleries = $query->paginate($request->get('per_page', 10));
+
+        // Add image URLs to each gallery
+        foreach ($galleries as $gallery) {
+            if ($gallery->image_path) {
+                $gallery->image_url = url('storage/' . $gallery->image_path);
+            }
+        }
+
         return response()->json($galleries);
     }
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'category_id' => 'required|exists:categories,id',
-            'status' => 'required|in:active,inactive'
+            'status' => 'required|in:active,inactive',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $data = $request->all();
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imagePath = $image->store('gallery', 'public');
-
-            $gallery = Gallery::create([
-                'title' => $request->title,
-                'description' => $request->description,
-                'image_path' => $imagePath,
-                'category_id' => $request->category_id,
-                'status' => $request->status
-            ]);
-
-            return response()->json([
-                'message' => 'Gallery item created successfully',
-                'data' => $gallery->load('category')
-            ], 201);
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->storeAs('public/gallery', $imageName);
+            $data['image_path'] = 'gallery/' . $imageName;
         }
 
-        return response()->json(['message' => 'Image upload failed'], 400);
+        $gallery = Gallery::create($data);
+
+        // Add image URL to response
+        if ($gallery->image_path) {
+            $gallery->image_url = url('storage/' . $gallery->image_path);
+        }
+
+        return response()->json([
+            'message' => 'Gallery created successfully',
+            'gallery' => $gallery
+        ], 201);
     }
 
     public function show(Gallery $gallery)
     {
-        return response()->json($gallery->load('category'));
+        // Add image URL to response
+        if ($gallery->image_path) {
+            $gallery->image_url = url('storage/' . $gallery->image_path);
+        }
+        return response()->json($gallery);
     }
 
     public function update(Request $request, Gallery $gallery)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'category_id' => 'required|exists:categories,id',
-            'status' => 'required|in:active,inactive'
+            'status' => 'required|in:active,inactive',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $data = $request->all();
+
         if ($request->hasFile('image')) {
+            // Delete old image
             if ($gallery->image_path) {
-                Storage::disk('public')->delete($gallery->image_path);
+                Storage::delete('public/' . $gallery->image_path);
             }
 
             $image = $request->file('image');
-            $imagePath = $image->store('gallery', 'public');
-            $gallery->image_path = $imagePath;
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->storeAs('public/gallery', $imageName);
+            $data['image_path'] = 'gallery/' . $imageName;
         }
 
-        $gallery->title = $request->title;
-        $gallery->description = $request->description;
-        $gallery->category_id = $request->category_id;
-        $gallery->status = $request->status;
-        $gallery->save();
+        $gallery->update($data);
+
+        // Add image URL to response
+        if ($gallery->image_path) {
+            $gallery->image_url = url('storage/' . $gallery->image_path);
+        }
 
         return response()->json([
-            'message' => 'Gallery item updated successfully',
-            'data' => $gallery->load('category')
+            'message' => 'Gallery updated successfully',
+            'gallery' => $gallery
         ]);
     }
 
@@ -118,6 +145,47 @@ class GalleryController extends Controller
 
         return response()->json([
             'message' => 'Gallery item deleted successfully'
+        ]);
+    }
+
+    /**
+     * Display a listing of active galleries for public access.
+     */
+    public function publicList(Request $request)
+    {
+        $query = Gallery::with('category')->where('status', 'active');
+
+        // Only apply search filter if search term is provided and not empty
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('title', 'like', "%{$searchTerm}%")
+                  ->orWhere('description', 'like', "%{$searchTerm}%");
+            });
+        }
+
+        // Only apply category filter if category_id is provided and not empty
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        // Sort by
+        $sortBy = $request->get('sort_by', 'created_at');
+        $sortDirection = $request->get('sort_direction', 'desc');
+        $query->orderBy($sortBy, $sortDirection);
+
+        $galleries = $query->paginate($request->get('per_page', 10));
+
+        // Add image URLs to each gallery
+        foreach ($galleries as $gallery) {
+            if ($gallery->image_path) {
+                $gallery->image_url = url('storage/' . $gallery->image_path);
+            }
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $galleries
         ]);
     }
 }

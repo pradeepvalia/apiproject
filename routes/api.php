@@ -34,7 +34,10 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::get('/encryption/public-key', [EncryptionController::class, 'getPublicKey']);
 Route::post('/suggestions', [SuggestionController::class, 'store']); // Public route for submitting suggestions
 Route::get('/events', [EventController::class, 'index']); // Public route for listing events
+Route::get('/events/active', [EventController::class, 'publicList']); // Public route for listing active events
 Route::get('/galleries', [GalleryController::class, 'index']); // Public route for listing galleries
+Route::get('/galleries/active', [GalleryController::class, 'publicList']); // Public route for listing active galleries
+Route::get('/categories/active', [CategoryController::class, 'publicList']); // Public route for listing active categories
 Route::post('/donations', [DonationController::class, 'store']); // Public route for making donations
 
 // Protected routes

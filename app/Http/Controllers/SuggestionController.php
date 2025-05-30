@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Suggestion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class SuggestionController extends Controller
 {
@@ -14,27 +15,28 @@ class SuggestionController extends Controller
     {
         $query = Suggestion::query();
 
-        // Search by name, email, phone, or description
-        if ($request->has('search')) {
+        // Only apply search filter if search term is provided and not empty
+        if ($request->filled('search')) {
             $searchTerm = $request->search;
             $query->where(function($q) use ($searchTerm) {
                 $q->where('name', 'like', "%{$searchTerm}%")
                   ->orWhere('email', 'like', "%{$searchTerm}%")
                   ->orWhere('phone', 'like', "%{$searchTerm}%")
+                  ->orWhere('subject', 'like', "%{$searchTerm}%")
                   ->orWhere('description', 'like', "%{$searchTerm}%");
             });
         }
 
-        // Filter by read/unread status
-        if ($request->has('is_read')) {
-            $query->where('is_read', $request->boolean('is_read'));
+        // Only apply read status filter if is_read is provided and not empty
+        if ($request->filled('is_read')) {
+            $query->where('is_read', $request->is_read);
         }
 
         // Date range filter
-        if ($request->has('date_from')) {
+        if ($request->filled('date_from')) {
             $query->whereDate('created_at', '>=', $request->date_from);
         }
-        if ($request->has('date_to')) {
+        if ($request->filled('date_to')) {
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
@@ -52,18 +54,23 @@ class SuggestionController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'phone' => 'nullable|string|max:20',
+            'phone' => 'required|string|max:20',
+            'subject' => 'required|string|max:255',
             'description' => 'required|string'
         ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
 
         $suggestion = Suggestion::create($request->all());
 
         return response()->json([
             'message' => 'Suggestion submitted successfully',
-            'data' => $suggestion
+            'suggestion' => $suggestion
         ], 201);
     }
 
@@ -78,9 +85,27 @@ class SuggestionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Suggestion $suggestion)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'subject' => 'required|string|max:255',
+            'description' => 'required|string',
+            'is_read' => 'boolean'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $suggestion->update($request->all());
+
+        return response()->json([
+            'message' => 'Suggestion updated successfully',
+            'suggestion' => $suggestion
+        ]);
     }
 
     /**
@@ -101,7 +126,7 @@ class SuggestionController extends Controller
 
         return response()->json([
             'message' => 'Suggestion marked as read',
-            'data' => $suggestion
+            'suggestion' => $suggestion
         ]);
     }
 
@@ -111,7 +136,7 @@ class SuggestionController extends Controller
 
         return response()->json([
             'message' => 'Suggestion marked as unread',
-            'data' => $suggestion
+            'suggestion' => $suggestion
         ]);
     }
 }

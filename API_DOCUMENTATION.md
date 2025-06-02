@@ -33,7 +33,7 @@ Request Body:
     "password": "password123",
     "password_confirmation": "password123",
     "phone": "1234567890",
-    "address": "123 Test Street"
+    "address": "123 Test St"
 }
 ```
 
@@ -47,7 +47,7 @@ Request Body:
 
 ```json
 {
-    "email": "john@example.com",
+    "email": "test@example.com",
     "password": "password123"
 }
 ```
@@ -93,15 +93,17 @@ Request Body:
 
 ```json
 {
-    "title": "Summer Charity Event",
-    "description": "Annual summer charity event",
-    "content": "Detailed content about the event",
-    "image": "file",
-    "event_date": "2024-06-15",
-    "event_time": "14:00",
-    "venue": "City Hall",
-    "status": true,
-    "featured": false
+    "title": "Event Title",
+    "description": "Event Description",
+    "content": "Event Content",
+    "image": "events/image.jpg",
+    "start_date": "2024-06-15",
+    "end_date": "2024-06-16",
+    "event_time": "14:00:00",
+    "venue": "Event Venue",
+    "status": 1,
+    "featured": 0,
+    "event_type": "conference"
 }
 ```
 
@@ -594,3 +596,11 @@ For endpoints requiring file uploads:
     - All responses are in JSON format
     - Success responses include relevant data and success message
     - Error responses include error message and details
+
+## Public Events
+
+### List Public Events
+- **URL**: `/api/public/events`
+- **Method**: `GET`
+- **Query Parameters**: Same as List Events
+- **Note**: Only returns active events by default

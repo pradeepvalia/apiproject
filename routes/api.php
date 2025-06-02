@@ -42,6 +42,7 @@ Route::get('/galleries', [GalleryController::class, 'index']); // Public route f
 Route::get('/galleries/active', [GalleryController::class, 'publicList']); // Public route for listing active galleries
 Route::get('/categories/active', [CategoryController::class, 'publicList']); // Public route for listing active categories
 Route::post('/donations', [DonationController::class, 'store']); // Public route for making donations
+Route::get('/events/{event}', [EventController::class, 'show']); // Public route for showing events
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
@@ -55,7 +56,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Events routes (except index)
     Route::controller(EventController::class)->group(function () {
         Route::post('/events', 'store');
-        Route::get('/events/{event}', 'show');
+        // Route::get('/events/{event}', 'show');
         Route::put('/events/{event}', 'update');
         Route::delete('/events/{event}', 'destroy');
     });

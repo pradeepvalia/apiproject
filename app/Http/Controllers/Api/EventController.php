@@ -32,12 +32,12 @@ class EventController extends Controller
 
         // Only apply date filter if date_from is provided and not empty
         if ($request->filled('date_from')) {
-            $query->whereDate('event_date', '>=', $request->date_from);
+            $query->whereDate('start_date', '>=', $request->date_from);
         }
 
         // Only apply date filter if date_to is provided and not empty
         if ($request->filled('date_to')) {
-            $query->whereDate('event_date', '<=', $request->date_to);
+            $query->whereDate('end_date', '<=', $request->date_to);
         }
 
         // Only apply event type filter if event_type is provided and not empty
@@ -46,7 +46,7 @@ class EventController extends Controller
         }
 
         // Sort by
-        $sortBy = $request->get('sort_by', 'event_date');
+        $sortBy = $request->get('sort_by', 'start_date');
         $sortDirection = $request->get('sort_direction', 'desc');
         $query->orderBy($sortBy, $sortDirection);
 
@@ -69,11 +69,13 @@ class EventController extends Controller
             'description' => 'required|string',
             'content' => 'required|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'event_date' => 'required|date',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
             'event_time' => 'required',
             'venue' => 'required|string|max:255',
             'status' => 'boolean',
-            'featured' => 'boolean'
+            'featured' => 'boolean',
+            'event_type' => 'required|string'
         ]);
 
         if ($validator->fails()) {
@@ -119,11 +121,13 @@ class EventController extends Controller
             'description' => 'required|string',
             'content' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'event_date' => 'required|date',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
             'event_time' => 'required',
             'venue' => 'required|string|max:255',
             'status' => 'boolean',
-            'featured' => 'boolean'
+            'featured' => 'boolean',
+            'event_type' => 'required|string'
         ]);
 
         if ($validator->fails()) {
@@ -185,12 +189,12 @@ class EventController extends Controller
 
         // Only apply date filter if date_from is provided and not empty
         if ($request->filled('date_from')) {
-            $query->whereDate('event_date', '>=', $request->date_from);
+            $query->whereDate('start_date', '>=', $request->date_from);
         }
 
         // Only apply date filter if date_to is provided and not empty
         if ($request->filled('date_to')) {
-            $query->whereDate('event_date', '<=', $request->date_to);
+            $query->whereDate('end_date', '<=', $request->date_to);
         }
 
         // Only apply search filter if search term is provided and not empty
@@ -209,7 +213,7 @@ class EventController extends Controller
         }
 
         // Sort by
-        $sortBy = $request->get('sort_by', 'event_date');
+        $sortBy = $request->get('sort_by', 'start_date');
         $sortDirection = $request->get('sort_direction', 'asc');
         $query->orderBy($sortBy, $sortDirection);
 

@@ -12,6 +12,7 @@ use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SuggestionController;
 use App\Http\Controllers\Api\EncryptionController;
+use App\Http\Controllers\Api\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,6 +47,10 @@ Route::post('/donations', [DonationController::class, 'store']); // Public route
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
+
+    // User Profile routes
+    Route::put('/user/profile', [ProfileController::class, 'updateProfile']);
+    Route::put('/user/password', [ProfileController::class, 'changePassword']);
 
     // Events routes (except index)
     Route::controller(EventController::class)->group(function () {

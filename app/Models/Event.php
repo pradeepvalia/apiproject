@@ -16,16 +16,19 @@ class Event extends Model
         'description',
         'content',
         'image',
-        'event_date',
+        'start_date',
+        'end_date',
         'event_time',
         'venue',
         'status',
-        'featured'
+        'featured',
+        'event_type'
     ];
 
     protected $casts = [
-        'event_date' => 'date',
-        'featured' => 'boolean',
-        'status' => 'boolean'
+        'start_date' => 'date',
+        'end_date' => 'date',
+        'status' => 'boolean',
+        'featured' => 'boolean'
     ];
 }

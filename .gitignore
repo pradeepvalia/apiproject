@@ -8,6 +8,8 @@
 .env
 .env.backup
 .env.production
+.phpunit.result.cache
+docker-compose.override.yml
 Homestead.json
 Homestead.yaml
 auth.json
@@ -16,3 +18,6 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+/.vagrant
+.DS_Store
+Thumbs.db

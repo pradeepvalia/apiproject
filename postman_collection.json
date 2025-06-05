@@ -2794,6 +2794,236 @@
                     ]
                 }
             ]
+        },
+        {
+            "name": "Activity Logs",
+            "description": "Activity log management endpoints",
+            "item": [
+                {
+                    "name": "List Activity Logs",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/activity-logs?module=events&action=created&user_id=1&search=test&date_from=2024-01-01&date_to=2024-12-31&sort_by=created_at&sort_direction=desc&per_page=15",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "activity-logs"],
+                            "query": [
+                                {
+                                    "key": "module",
+                                    "value": "events",
+                                    "description": "Filter by module (e.g., events, gallery, library)",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "action",
+                                    "value": "created",
+                                    "description": "Filter by action (e.g., created, updated, deleted)",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "user_id",
+                                    "value": "1",
+                                    "description": "Filter by user ID",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "search",
+                                    "value": "test",
+                                    "description": "Search in description",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "date_from",
+                                    "value": "2024-01-01",
+                                    "description": "Filter by start date (YYYY-MM-DD)",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "date_to",
+                                    "value": "2024-12-31",
+                                    "description": "Filter by end date (YYYY-MM-DD)",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "sort_by",
+                                    "value": "created_at",
+                                    "description": "Sort field (default: created_at)",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "sort_direction",
+                                    "value": "desc",
+                                    "description": "Sort direction (asc/desc)",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "15",
+                                    "description": "Items per page (default: 15)",
+                                    "disabled": true
+                                }
+                            ]
+                        },
+                        "description": "Get a paginated list of activity logs with filtering options"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/activity-logs"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"current_page\": 1,\n        \"data\": [\n            {\n                \"id\": 1,\n                \"user_id\": 1,\n                \"module\": \"events\",\n                \"action\": \"created\",\n                \"description\": \"Created new event: Test Event\",\n                \"old_values\": null,\n                \"new_values\": {\n                    \"id\": 1,\n                    \"title\": \"Test Event\",\n                    \"description\": \"Test Description\"\n                },\n                \"created_at\": \"2024-05-25T11:00:00.000000Z\",\n                \"updated_at\": \"2024-05-25T11:00:00.000000Z\",\n                \"user\": {\n                    \"id\": 1,\n                    \"name\": \"Test User\",\n                    \"email\": \"test@example.com\"\n                }\n            }\n        ],\n        \"first_page_url\": \"http://localhost:8000/api/activity-logs?page=1\",\n        \"from\": 1,\n        \"last_page\": 1,\n        \"last_page_url\": \"http://localhost:8000/api/activity-logs?page=1\",\n        \"next_page_url\": null,\n        \"path\": \"http://localhost:8000/api/activity-logs\",\n        \"per_page\": 15,\n        \"prev_page_url\": null,\n        \"to\": 1,\n        \"total\": 1\n    }\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Activity Log Details",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/activity-logs/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "activity-logs", "1"]
+                        },
+                        "description": "Get detailed information about a specific activity log"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/activity-logs/1"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"id\": 1,\n        \"user_id\": 1,\n        \"module\": \"events\",\n        \"action\": \"created\",\n        \"description\": \"Created new event: Test Event\",\n        \"old_values\": null,\n        \"new_values\": {\n            \"id\": 1,\n            \"title\": \"Test Event\",\n            \"description\": \"Test Description\"\n        },\n        \"created_at\": \"2024-05-25T11:00:00.000000Z\",\n        \"updated_at\": \"2024-05-25T11:00:00.000000Z\",\n        \"user\": {\n            \"id\": 1,\n            \"name\": \"Test User\",\n            \"email\": \"test@example.com\"\n        }\n    }\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Available Modules",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/activity-logs/modules/list",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "activity-logs", "modules", "list"]
+                        },
+                        "description": "Get a list of all available modules in activity logs"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/activity-logs/modules/list"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"status\": \"success\",\n    \"data\": [\n        \"events\",\n        \"gallery\",\n        \"library\",\n        \"user\",\n        \"category\"\n    ]\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Available Actions",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/activity-logs/actions/list",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "activity-logs", "actions", "list"]
+                        },
+                        "description": "Get a list of all available actions in activity logs"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/activity-logs/actions/list"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"status\": \"success\",\n    \"data\": [\n        \"created\",\n        \"updated\",\n        \"deleted\"\n    ]\n}"
+                        }
+                    ]
+                }
+            ]
         }
     ],
     "variable": [

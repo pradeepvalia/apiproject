@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Services\ActivityLogService;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -44,6 +45,13 @@ class CategoryController extends Controller
 
         $category = Category::create($request->all());
 
+        // Log the activity
+        ActivityLogService::logCreate(
+            'category',
+            "Created new category: {$category->name}",
+            $category->toArray()
+        );
+
         return response()->json([
             'message' => 'Category created successfully',
             'data' => $category
@@ -68,7 +76,16 @@ class CategoryController extends Controller
             'description' => 'nullable|string'
         ]);
 
+        $oldData = $category->toArray();
         $category->update($request->all());
+
+        // Log the activity
+        ActivityLogService::logUpdate(
+            'category',
+            "Updated category: {$category->name}",
+            $oldData,
+            $category->toArray()
+        );
 
         return response()->json([
             'message' => 'Category updated successfully',
@@ -81,7 +98,15 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
+        $categoryData = $category->toArray();
         $category->delete();
+
+        // Log the activity
+        ActivityLogService::logDelete(
+            'category',
+            "Deleted category: {$categoryData['name']}",
+            $categoryData
+        );
 
         return response()->json([
             'message' => 'Category deleted successfully'

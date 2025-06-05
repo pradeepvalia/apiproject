@@ -2464,6 +2464,336 @@
                     }
                 }
             ]
+        },
+        {
+            "name": "Library",
+            "description": "Library management endpoints",
+            "item": [
+                {
+                    "name": "List Library Items",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/libraries",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "libraries"]
+                        },
+                        "description": "Get a list of all library items (public)"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/libraries"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"title\": \"Sample Document\",\n            \"description\": \"This is a sample document\",\n            \"file_path\": \"library/abc123.pdf\",\n            \"original_filename\": \"document.pdf\",\n            \"file_type\": \"pdf\",\n            \"created_at\": \"2024-06-05T03:40:29.000000Z\",\n            \"updated_at\": \"2024-06-05T03:40:29.000000Z\"\n        }\n    ]\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Library Item",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/libraries/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "libraries", "1"]
+                        },
+                        "description": "Get details of a specific library item (public)"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/libraries/1"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"id\": 1,\n        \"title\": \"Sample Document\",\n        \"description\": \"This is a sample document\",\n        \"file_path\": \"library/abc123.pdf\",\n        \"original_filename\": \"document.pdf\",\n        \"file_type\": \"pdf\",\n        \"created_at\": \"2024-06-05T03:40:29.000000Z\",\n        \"updated_at\": \"2024-06-05T03:40:29.000000Z\"\n    }\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Download Library Item",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/libraries/1/download",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "libraries", "1", "download"]
+                        },
+                        "description": "Download a library item file (public)"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/libraries/1/download"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "binary",
+                            "header": [
+                                {
+                                    "key": "Content-Disposition",
+                                    "value": "attachment; filename=document.pdf"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "[Binary file content]"
+                        }
+                    ]
+                },
+                {
+                    "name": "Create Library Item",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "title",
+                                    "value": "New Document",
+                                    "type": "text",
+                                    "description": "Title of the document (required)"
+                                },
+                                {
+                                    "key": "description",
+                                    "value": "This is a new document",
+                                    "type": "text",
+                                    "description": "Description of the document (optional)"
+                                },
+                                {
+                                    "key": "file",
+                                    "type": "file",
+                                    "src": "/path/to/file.pdf",
+                                    "description": "File to upload (required, max 10MB)"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/libraries",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "libraries"]
+                        },
+                        "description": "Create a new library item (requires authentication)"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "title",
+                                            "value": "New Document"
+                                        },
+                                        {
+                                            "key": "description",
+                                            "value": "This is a new document"
+                                        },
+                                        {
+                                            "key": "file",
+                                            "type": "file",
+                                            "src": "/path/to/file.pdf"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/libraries"
+                                }
+                            },
+                            "status": "Created",
+                            "code": 201,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"status\": \"success\",\n    \"message\": \"Library item created successfully\",\n    \"data\": {\n        \"id\": 2,\n        \"title\": \"New Document\",\n        \"description\": \"This is a new document\",\n        \"file_path\": \"library/def456.pdf\",\n        \"original_filename\": \"file.pdf\",\n        \"file_type\": \"pdf\",\n        \"created_at\": \"2024-06-05T03:45:00.000000Z\",\n        \"updated_at\": \"2024-06-05T03:45:00.000000Z\"\n    }\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Update Library Item",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "title",
+                                    "value": "Updated Document",
+                                    "type": "text",
+                                    "description": "Title of the document (required)"
+                                },
+                                {
+                                    "key": "description",
+                                    "value": "This is an updated document",
+                                    "type": "text",
+                                    "description": "Description of the document (optional)"
+                                },
+                                {
+                                    "key": "file",
+                                    "type": "file",
+                                    "src": "/path/to/new-file.pdf",
+                                    "description": "New file to upload (optional, max 10MB)"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/libraries/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "libraries", "1"]
+                        },
+                        "description": "Update an existing library item (requires authentication)"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "PUT",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "title",
+                                            "value": "Updated Document"
+                                        },
+                                        {
+                                            "key": "description",
+                                            "value": "This is an updated document"
+                                        },
+                                        {
+                                            "key": "file",
+                                            "type": "file",
+                                            "src": "/path/to/new-file.pdf"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/libraries/1"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"status\": \"success\",\n    \"message\": \"Library item updated successfully\",\n    \"data\": {\n        \"id\": 1,\n        \"title\": \"Updated Document\",\n        \"description\": \"This is an updated document\",\n        \"file_path\": \"library/ghi789.pdf\",\n        \"original_filename\": \"new-file.pdf\",\n        \"file_type\": \"pdf\",\n        \"created_at\": \"2024-06-05T03:40:29.000000Z\",\n        \"updated_at\": \"2024-06-05T03:50:00.000000Z\"\n    }\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete Library Item",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/libraries/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "libraries", "1"]
+                        },
+                        "description": "Delete a library item (requires authentication)"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "DELETE",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/libraries/1"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"status\": \"success\",\n    \"message\": \"Library item deleted successfully\"\n}"
+                        }
+                    ]
+                }
+            ]
         }
     ],
     "variable": [

@@ -190,8 +190,8 @@ class LibraryController extends Controller
             ], 404);
         }
 
-        return Storage::disk('public')->download(
-            $library->file_path,
+        return response()->download(
+            storage_path('app/public/' . $library->file_path),
             $library->original_filename
         );
     }

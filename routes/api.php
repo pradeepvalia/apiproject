@@ -14,6 +14,7 @@ use App\Http\Controllers\SuggestionController;
 use App\Http\Controllers\Api\EncryptionController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\LibraryController;
+use App\Http\Controllers\Api\ActivityLogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -115,4 +116,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/libraries', [LibraryController::class, 'store']);
     Route::put('/libraries/{library}', [LibraryController::class, 'update']);
     Route::delete('/libraries/{library}', [LibraryController::class, 'destroy']);
+
+    // Activity Log routes
+    Route::prefix('activity-logs')->group(function () {
+        Route::get('/', [ActivityLogController::class, 'index']);
+        Route::get('/{activityLog}', [ActivityLogController::class, 'show']);
+        Route::get('/modules/list', [ActivityLogController::class, 'getModules']);
+        Route::get('/actions/list', [ActivityLogController::class, 'getActions']);
+    });
 });

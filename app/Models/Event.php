@@ -22,7 +22,8 @@ class Event extends Model
         'venue',
         'status',
         'featured',
-        'event_type'
+        'event_type',
+        'link'
     ];
 
     protected $casts = [

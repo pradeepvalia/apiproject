@@ -13,6 +13,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SuggestionController;
 use App\Http\Controllers\Api\EncryptionController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\LibraryController;
+use App\Http\Controllers\Api\ActivityLogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,6 +45,11 @@ Route::get('/galleries/active', [GalleryController::class, 'publicList']); // Pu
 Route::get('/categories/active', [CategoryController::class, 'publicList']); // Public route for listing active categories
 Route::post('/donations', [DonationController::class, 'store']); // Public route for making donations
 Route::get('/events/{event}', [EventController::class, 'show']); // Public route for showing events
+
+// Public Library routes
+Route::get('/libraries', [LibraryController::class, 'index']);
+Route::get('/libraries/{library}', [LibraryController::class, 'show']);
+Route::get('/libraries/{library}/download', [LibraryController::class, 'download']);
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
@@ -104,4 +111,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/suggestions/{suggestion}/mark-as-read', [SuggestionController::class, 'markAsRead']);
     Route::post('/suggestions/{suggestion}/mark-as-unread', [SuggestionController::class, 'markAsUnread']);
     Route::delete('/suggestions/{suggestion}', [SuggestionController::class, 'destroy']);
+
+    // Library routes (protected operations)
+    Route::post('/libraries', [LibraryController::class, 'store']);
+    Route::put('/libraries/{library}', [LibraryController::class, 'update']);
+    Route::delete('/libraries/{library}', [LibraryController::class, 'destroy']);
+
+    // Activity Log routes
+    Route::prefix('activity-logs')->group(function () {
+        Route::get('/', [ActivityLogController::class, 'index']);
+        Route::get('/{activityLog}', [ActivityLogController::class, 'show']);
+        Route::get('/modules/list', [ActivityLogController::class, 'getModules']);
+        Route::get('/actions/list', [ActivityLogController::class, 'getActions']);
+    });
 });

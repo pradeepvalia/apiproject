@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\ActivityLogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -73,6 +74,13 @@ class UserController extends Controller
             'is_active' => $request->is_active ?? true
         ]);
 
+        // Log the activity
+        ActivityLogService::logCreate(
+            'user',
+            "Created new user: {$user->name}",
+            $user->toArray()
+        );
+
         return response()->json([
             'message' => 'User created successfully',
             'user' => $user
@@ -100,6 +108,7 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
+        $oldData = $user->toArray();
         $data = $request->except('password');
 
         if ($request->filled('password')) {
@@ -107,6 +116,14 @@ class UserController extends Controller
         }
 
         $user->update($data);
+
+        // Log the activity
+        ActivityLogService::logUpdate(
+            'user',
+            "Updated user: {$user->name}",
+            $oldData,
+            $user->toArray()
+        );
 
         return response()->json([
             'message' => 'User updated successfully',
@@ -116,7 +133,15 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        $userData = $user->toArray();
         $user->delete();
+
+        // Log the activity
+        ActivityLogService::logDelete(
+            'user',
+            "Deleted user: {$userData['name']}",
+            $userData
+        );
 
         return response()->json([
             'message' => 'User deleted successfully'

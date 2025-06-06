@@ -632,13 +632,13 @@
                         "method": "POST",
                         "header": [
                             {
-                                "key": "Authorization",
-                                "value": "Bearer {{token}}",
+                                "key": "Accept",
+                                "value": "application/json",
                                 "type": "text"
                             },
                             {
-                                "key": "Accept",
-                                "value": "application/json",
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
                                 "type": "text"
                             }
                         ],
@@ -647,38 +647,74 @@
                             "formdata": [
                                 {
                                     "key": "title",
-                                    "value": "Summer Event 2024",
+                                    "value": "Test Event",
                                     "type": "text",
-                                    "description": "required, max:255"
+                                    "description": "required, string, max:255"
                                 },
                                 {
                                     "key": "description",
-                                    "value": "Annual summer charity event",
+                                    "value": "This is a test event description",
                                     "type": "text",
-                                    "description": "required"
+                                    "description": "required, string"
                                 },
                                 {
-                                    "key": "event_date",
-                                    "value": "2024-06-15",
+                                    "key": "content",
+                                    "value": "This is the full content of the test event",
                                     "type": "text",
-                                    "description": "required, format: Y-m-d"
-                                },
-                                {
-                                    "key": "event_time",
-                                    "value": "14:00",
-                                    "type": "text",
-                                    "description": "required, format: H:i"
-                                },
-                                {
-                                    "key": "venue",
-                                    "value": "City Hall",
-                                    "type": "text",
-                                    "description": "required, max:255"
+                                    "description": "required, string"
                                 },
                                 {
                                     "key": "image",
                                     "type": "file",
-                                    "description": "optional, jpeg,png,jpg, max:2048KB"
+                                    "description": "required, image file (jpeg,png,jpg,gif), max:2MB"
+                                },
+                                {
+                                    "key": "start_date",
+                                    "value": "2024-06-01",
+                                    "type": "text",
+                                    "description": "required, date"
+                                },
+                                {
+                                    "key": "end_date",
+                                    "value": "2024-06-02",
+                                    "type": "text",
+                                    "description": "required, date, must be after or equal to start_date"
+                                },
+                                {
+                                    "key": "event_time",
+                                    "value": "10:00 AM",
+                                    "type": "text",
+                                    "description": "required"
+                                },
+                                {
+                                    "key": "venue",
+                                    "value": "Test Venue",
+                                    "type": "text",
+                                    "description": "required, string, max:255"
+                                },
+                                {
+                                    "key": "link",
+                                    "value": "https://example.com/event",
+                                    "type": "text",
+                                    "description": "optional, valid URL, max:255"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "1",
+                                    "type": "text",
+                                    "description": "optional, boolean"
+                                },
+                                {
+                                    "key": "featured",
+                                    "value": "0",
+                                    "type": "text",
+                                    "description": "optional, boolean"
+                                },
+                                {
+                                    "key": "event_type",
+                                    "value": "conference",
+                                    "type": "text",
+                                    "description": "required, string"
                                 }
                             ]
                         },
@@ -692,16 +728,16 @@
                 {
                     "name": "Update Event",
                     "request": {
-                        "method": "PUT",
+                        "method": "POST",
                         "header": [
-                            {
-                                "key": "Authorization",
-                                "value": "Bearer {{token}}",
-                                "type": "text"
-                            },
                             {
                                 "key": "Accept",
                                 "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
                                 "type": "text"
                             }
                         ],
@@ -709,39 +745,80 @@
                             "mode": "formdata",
                             "formdata": [
                                 {
+                                    "key": "_method",
+                                    "value": "PUT",
+                                    "type": "text"
+                                },
+                                {
                                     "key": "title",
-                                    "value": "Updated Event Title",
+                                    "value": "Updated Test Event",
                                     "type": "text",
-                                    "description": "optional, max:255"
+                                    "description": "required, string, max:255"
                                 },
                                 {
                                     "key": "description",
-                                    "value": "Updated event description",
+                                    "value": "This is an updated test event description",
                                     "type": "text",
-                                    "description": "optional"
+                                    "description": "required, string"
                                 },
                                 {
-                                    "key": "event_date",
-                                    "value": "2024-07-15",
+                                    "key": "content",
+                                    "value": "This is the updated full content of the test event",
                                     "type": "text",
-                                    "description": "optional, format: Y-m-d"
-                                },
-                                {
-                                    "key": "event_time",
-                                    "value": "15:30",
-                                    "type": "text",
-                                    "description": "optional, format: H:i"
-                                },
-                                {
-                                    "key": "venue",
-                                    "value": "Updated Venue",
-                                    "type": "text",
-                                    "description": "optional, max:255"
+                                    "description": "required, string"
                                 },
                                 {
                                     "key": "image",
                                     "type": "file",
-                                    "description": "optional, jpeg,png,jpg, max:2048KB"
+                                    "description": "optional, image file (jpeg,png,jpg,gif), max:2MB"
+                                },
+                                {
+                                    "key": "start_date",
+                                    "value": "2024-06-01",
+                                    "type": "text",
+                                    "description": "required, date"
+                                },
+                                {
+                                    "key": "end_date",
+                                    "value": "2024-06-02",
+                                    "type": "text",
+                                    "description": "required, date, must be after or equal to start_date"
+                                },
+                                {
+                                    "key": "event_time",
+                                    "value": "11:00 AM",
+                                    "type": "text",
+                                    "description": "required"
+                                },
+                                {
+                                    "key": "venue",
+                                    "value": "Updated Test Venue",
+                                    "type": "text",
+                                    "description": "required, string, max:255"
+                                },
+                                {
+                                    "key": "link",
+                                    "value": "https://example.com/updated-event",
+                                    "type": "text",
+                                    "description": "optional, valid URL, max:255"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "1",
+                                    "type": "text",
+                                    "description": "optional, boolean"
+                                },
+                                {
+                                    "key": "featured",
+                                    "value": "1",
+                                    "type": "text",
+                                    "description": "optional, boolean"
+                                },
+                                {
+                                    "key": "event_type",
+                                    "value": "conference",
+                                    "type": "text",
+                                    "description": "required, string"
                                 }
                             ]
                         },
@@ -2462,6 +2539,566 @@
                             "path": ["api", "email-templates", "{id}"]
                         }
                     }
+                }
+            ]
+        },
+        {
+            "name": "Library",
+            "description": "Library management endpoints",
+            "item": [
+                {
+                    "name": "List Library Items",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/libraries",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "libraries"]
+                        },
+                        "description": "Get a list of all library items (public)"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/libraries"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"status\": \"success\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"title\": \"Sample Document\",\n            \"description\": \"This is a sample document\",\n            \"file_path\": \"library/abc123.pdf\",\n            \"original_filename\": \"document.pdf\",\n            \"file_type\": \"pdf\",\n            \"created_at\": \"2024-06-05T03:40:29.000000Z\",\n            \"updated_at\": \"2024-06-05T03:40:29.000000Z\"\n        }\n    ]\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Library Item",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/libraries/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "libraries", "1"]
+                        },
+                        "description": "Get details of a specific library item (public)"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/libraries/1"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"id\": 1,\n        \"title\": \"Sample Document\",\n        \"description\": \"This is a sample document\",\n        \"file_path\": \"library/abc123.pdf\",\n        \"original_filename\": \"document.pdf\",\n        \"file_type\": \"pdf\",\n        \"created_at\": \"2024-06-05T03:40:29.000000Z\",\n        \"updated_at\": \"2024-06-05T03:40:29.000000Z\"\n    }\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Download Library Item",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/libraries/1/download",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "libraries", "1", "download"]
+                        },
+                        "description": "Download a library item file (public)"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/libraries/1/download"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "binary",
+                            "header": [
+                                {
+                                    "key": "Content-Disposition",
+                                    "value": "attachment; filename=document.pdf"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "[Binary file content]"
+                        }
+                    ]
+                },
+                {
+                    "name": "Create Library Item",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "title",
+                                    "value": "New Document",
+                                    "type": "text",
+                                    "description": "Title of the document (required)"
+                                },
+                                {
+                                    "key": "description",
+                                    "value": "This is a new document",
+                                    "type": "text",
+                                    "description": "Description of the document (optional)"
+                                },
+                                {
+                                    "key": "file",
+                                    "type": "file",
+                                    "src": "/path/to/file.pdf",
+                                    "description": "File to upload (required, max 10MB)"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/libraries",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "libraries"]
+                        },
+                        "description": "Create a new library item (requires authentication)"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "title",
+                                            "value": "New Document"
+                                        },
+                                        {
+                                            "key": "description",
+                                            "value": "This is a new document"
+                                        },
+                                        {
+                                            "key": "file",
+                                            "type": "file",
+                                            "src": "/path/to/file.pdf"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/libraries"
+                                }
+                            },
+                            "status": "Created",
+                            "code": 201,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"status\": \"success\",\n    \"message\": \"Library item created successfully\",\n    \"data\": {\n        \"id\": 2,\n        \"title\": \"New Document\",\n        \"description\": \"This is a new document\",\n        \"file_path\": \"library/def456.pdf\",\n        \"original_filename\": \"file.pdf\",\n        \"file_type\": \"pdf\",\n        \"created_at\": \"2024-06-05T03:45:00.000000Z\",\n        \"updated_at\": \"2024-06-05T03:45:00.000000Z\"\n    }\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Update Library Item",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "title",
+                                    "value": "Updated Document",
+                                    "type": "text",
+                                    "description": "Title of the document (required)"
+                                },
+                                {
+                                    "key": "description",
+                                    "value": "This is an updated document",
+                                    "type": "text",
+                                    "description": "Description of the document (optional)"
+                                },
+                                {
+                                    "key": "file",
+                                    "type": "file",
+                                    "src": "/path/to/new-file.pdf",
+                                    "description": "New file to upload (optional, max 10MB)"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/libraries/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "libraries", "1"]
+                        },
+                        "description": "Update an existing library item (requires authentication)"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "PUT",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "title",
+                                            "value": "Updated Document"
+                                        },
+                                        {
+                                            "key": "description",
+                                            "value": "This is an updated document"
+                                        },
+                                        {
+                                            "key": "file",
+                                            "type": "file",
+                                            "src": "/path/to/new-file.pdf"
+                                        }
+                                    ]
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/libraries/1"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"status\": \"success\",\n    \"message\": \"Library item updated successfully\",\n    \"data\": {\n        \"id\": 1,\n        \"title\": \"Updated Document\",\n        \"description\": \"This is an updated document\",\n        \"file_path\": \"library/ghi789.pdf\",\n        \"original_filename\": \"new-file.pdf\",\n        \"file_type\": \"pdf\",\n        \"created_at\": \"2024-06-05T03:40:29.000000Z\",\n        \"updated_at\": \"2024-06-05T03:50:00.000000Z\"\n    }\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Delete Library Item",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/libraries/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "libraries", "1"]
+                        },
+                        "description": "Delete a library item (requires authentication)"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "DELETE",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/libraries/1"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"status\": \"success\",\n    \"message\": \"Library item deleted successfully\"\n}"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Activity Logs",
+            "description": "Activity log management endpoints",
+            "item": [
+                {
+                    "name": "List Activity Logs",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/activity-logs?module=events&action=created&user_id=1&search=test&date_from=2024-01-01&date_to=2024-12-31&sort_by=created_at&sort_direction=desc&per_page=15",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "activity-logs"],
+                            "query": [
+                                {
+                                    "key": "module",
+                                    "value": "events",
+                                    "description": "Filter by module (e.g., events, gallery, library)",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "action",
+                                    "value": "created",
+                                    "description": "Filter by action (e.g., created, updated, deleted)",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "user_id",
+                                    "value": "1",
+                                    "description": "Filter by user ID",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "search",
+                                    "value": "test",
+                                    "description": "Search in description",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "date_from",
+                                    "value": "2024-01-01",
+                                    "description": "Filter by start date (YYYY-MM-DD)",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "date_to",
+                                    "value": "2024-12-31",
+                                    "description": "Filter by end date (YYYY-MM-DD)",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "sort_by",
+                                    "value": "created_at",
+                                    "description": "Sort field (default: created_at)",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "sort_direction",
+                                    "value": "desc",
+                                    "description": "Sort direction (asc/desc)",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "15",
+                                    "description": "Items per page (default: 15)",
+                                    "disabled": true
+                                }
+                            ]
+                        },
+                        "description": "Get a paginated list of activity logs with filtering options"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/activity-logs"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"current_page\": 1,\n        \"data\": [\n            {\n                \"id\": 1,\n                \"user_id\": 1,\n                \"module\": \"events\",\n                \"action\": \"created\",\n                \"description\": \"Created new event: Test Event\",\n                \"old_values\": null,\n                \"new_values\": {\n                    \"id\": 1,\n                    \"title\": \"Test Event\",\n                    \"description\": \"Test Description\"\n                },\n                \"created_at\": \"2024-05-25T11:00:00.000000Z\",\n                \"updated_at\": \"2024-05-25T11:00:00.000000Z\",\n                \"user\": {\n                    \"id\": 1,\n                    \"name\": \"Test User\",\n                    \"email\": \"test@example.com\"\n                }\n            }\n        ],\n        \"first_page_url\": \"http://localhost:8000/api/activity-logs?page=1\",\n        \"from\": 1,\n        \"last_page\": 1,\n        \"last_page_url\": \"http://localhost:8000/api/activity-logs?page=1\",\n        \"next_page_url\": null,\n        \"path\": \"http://localhost:8000/api/activity-logs\",\n        \"per_page\": 15,\n        \"prev_page_url\": null,\n        \"to\": 1,\n        \"total\": 1\n    }\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Activity Log Details",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/activity-logs/1",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "activity-logs", "1"]
+                        },
+                        "description": "Get detailed information about a specific activity log"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/activity-logs/1"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"status\": \"success\",\n    \"data\": {\n        \"id\": 1,\n        \"user_id\": 1,\n        \"module\": \"events\",\n        \"action\": \"created\",\n        \"description\": \"Created new event: Test Event\",\n        \"old_values\": null,\n        \"new_values\": {\n            \"id\": 1,\n            \"title\": \"Test Event\",\n            \"description\": \"Test Description\"\n        },\n        \"created_at\": \"2024-05-25T11:00:00.000000Z\",\n        \"updated_at\": \"2024-05-25T11:00:00.000000Z\",\n        \"user\": {\n            \"id\": 1,\n            \"name\": \"Test User\",\n            \"email\": \"test@example.com\"\n        }\n    }\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Available Modules",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/activity-logs/modules/list",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "activity-logs", "modules", "list"]
+                        },
+                        "description": "Get a list of all available modules in activity logs"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/activity-logs/modules/list"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"status\": \"success\",\n    \"data\": [\n        \"events\",\n        \"gallery\",\n        \"library\",\n        \"user\",\n        \"category\"\n    ]\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Available Actions",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/activity-logs/actions/list",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "activity-logs", "actions", "list"]
+                        },
+                        "description": "Get a list of all available actions in activity logs"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/activity-logs/actions/list"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"status\": \"success\",\n    \"data\": [\n        \"created\",\n        \"updated\",\n        \"deleted\"\n    ]\n}"
+                        }
+                    ]
                 }
             ]
         }

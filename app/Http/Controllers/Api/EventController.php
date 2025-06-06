@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Event;
+use App\Services\ActivityLogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -73,6 +74,7 @@ class EventController extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
             'event_time' => 'required',
             'venue' => 'required|string|max:255',
+            'link' => 'nullable|url|max:255',
             'status' => 'boolean',
             'featured' => 'boolean',
             'event_type' => 'required|string'
@@ -93,6 +95,13 @@ class EventController extends Controller
         }
 
         $event = Event::create($data);
+
+        // Log the activity
+        ActivityLogService::logCreate(
+            'event',
+            "Created new event: {$event->title}",
+            $event->toArray()
+        );
 
         // Add image URL to response
         if ($event->image) {
@@ -125,6 +134,7 @@ class EventController extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
             'event_time' => 'required',
             'venue' => 'required|string|max:255',
+            'link' => 'nullable|url|max:255',
             'status' => 'boolean',
             'featured' => 'boolean',
             'event_type' => 'required|string'
@@ -134,6 +144,7 @@ class EventController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
+        $oldData = $event->toArray();
         $data = $request->all();
         $data['slug'] = Str::slug($request->title);
 
@@ -151,6 +162,14 @@ class EventController extends Controller
 
         $event->update($data);
 
+        // Log the activity
+        ActivityLogService::logUpdate(
+            'event',
+            "Updated event: {$event->title}",
+            $oldData,
+            $event->toArray()
+        );
+
         // Add image URL to response
         if ($event->image) {
             $event->image_url = url('storage/' . $event->image);
@@ -164,11 +183,20 @@ class EventController extends Controller
 
     public function destroy(Event $event)
     {
+        $eventData = $event->toArray();
+
         if ($event->image) {
             Storage::delete('public/' . $event->image);
         }
 
         $event->delete();
+
+        // Log the activity
+        ActivityLogService::logDelete(
+            'event',
+            "Deleted event: {$eventData['title']}",
+            $eventData
+        );
 
         return response()->json([
             'message' => 'Event deleted successfully'

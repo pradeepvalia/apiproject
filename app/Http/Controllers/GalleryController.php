@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Gallery;
+use App\Services\ActivityLogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -74,6 +75,13 @@ class GalleryController extends Controller
 
         $gallery = Gallery::create($data);
 
+        // Log the activity
+        ActivityLogService::logCreate(
+            'gallery',
+            "Created new gallery item: {$gallery->title}",
+            $gallery->toArray()
+        );
+
         // Add image URL to response
         if ($gallery->image_path) {
             $gallery->image_url = url('storage/' . $gallery->image_path);
@@ -108,6 +116,7 @@ class GalleryController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
+        $oldData = $gallery->toArray();
         $data = $request->all();
 
         if ($request->hasFile('image')) {
@@ -124,6 +133,14 @@ class GalleryController extends Controller
 
         $gallery->update($data);
 
+        // Log the activity
+        ActivityLogService::logUpdate(
+            'gallery',
+            "Updated gallery item: {$gallery->title}",
+            $oldData,
+            $gallery->toArray()
+        );
+
         // Add image URL to response
         if ($gallery->image_path) {
             $gallery->image_url = url('storage/' . $gallery->image_path);
@@ -137,11 +154,20 @@ class GalleryController extends Controller
 
     public function destroy(Gallery $gallery)
     {
+        $galleryData = $gallery->toArray();
+
         if ($gallery->image_path) {
             Storage::disk('public')->delete($gallery->image_path);
         }
 
         $gallery->delete();
+
+        // Log the activity
+        ActivityLogService::logDelete(
+            'gallery',
+            "Deleted gallery item: {$galleryData['title']}",
+            $galleryData
+        );
 
         return response()->json([
             'message' => 'Gallery item deleted successfully'

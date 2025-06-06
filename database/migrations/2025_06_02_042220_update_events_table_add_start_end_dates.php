@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -13,8 +14,20 @@ return new class extends Migration
     {
         Schema::table('events', function (Blueprint $table) {
             $table->dropColumn('event_date');
-            $table->date('start_date')->after('content');
-            $table->date('end_date')->after('start_date');
+            $table->date('start_date')->nullable()->after('content');
+            $table->date('end_date')->nullable()->after('start_date');
+        });
+
+        // Update existing records with a default date
+        DB::table('events')->update([
+            'start_date' => now(),
+            'end_date' => now()->addDays(1)
+        ]);
+
+        // Make the columns required
+        Schema::table('events', function (Blueprint $table) {
+            $table->date('start_date')->nullable(false)->change();
+            $table->date('end_date')->nullable(false)->change();
         });
     }
 

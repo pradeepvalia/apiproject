@@ -19,12 +19,13 @@ class LibraryController extends Controller
         $libraries = Library::latest()->get();
         // Add full URL to each library item
         $libraries->transform(function ($library) {
-            $library->file_url = Storage::url($library->file_path);
+            $library->file_url = url('storage/' . $library->file_path);
             return $library;
         });
 
         return response()->json([
             'status' => 'success',
+            'message' => 'Library items retrieved successfully',
             'data' => $libraries
         ]);
     }
@@ -60,7 +61,7 @@ class LibraryController extends Controller
             ]);
 
             // Add full URL to the response
-            $library->file_url = Storage::url($filePath);
+            $library->file_url = url('storage/' . $filePath);
 
             // Log the activity
             ActivityLogService::logCreate(
@@ -88,10 +89,11 @@ class LibraryController extends Controller
     public function show(Library $library)
     {
         // Add full URL to the response
-        $library->file_url = Storage::url($library->file_path);
+        $library->file_url = url('storage/' . $library->file_path);
 
         return response()->json([
             'status' => 'success',
+            'message' => 'Library item retrieved successfully',
             'data' => $library
         ]);
     }
@@ -137,7 +139,7 @@ class LibraryController extends Controller
         $library->update($data);
 
         // Add full URL to the response
-        $library->file_url = Storage::url($library->file_path);
+        $library->file_url = url('storage/' . $library->file_path);
 
         // Log the activity
         ActivityLogService::logUpdate(

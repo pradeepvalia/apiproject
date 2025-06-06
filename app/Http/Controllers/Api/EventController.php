@@ -53,14 +53,19 @@ class EventController extends Controller
 
         $events = $query->paginate($request->get('per_page', 10));
 
-        // Add image URLs to each event
+        // Add image URLs and format link for each event
         foreach ($events as $event) {
             if ($event->image) {
                 $event->image_url = url('storage/' . $event->image);
             }
+            $event->formatted_link = $event->link ? url($event->link) : null;
         }
 
-        return response()->json($events);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Events retrieved successfully',
+            'data' => $events
+        ]);
     }
 
     public function store(Request $request)
@@ -72,7 +77,7 @@ class EventController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
-            'event_time' => 'required',
+            'event_time' => 'required|date_format:H:i',
             'venue' => 'required|string|max:255',
             'link' => 'nullable|url|max:255',
             'status' => 'boolean',
@@ -81,11 +86,27 @@ class EventController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
         }
 
         $data = $request->all();
-        $data['slug'] = Str::slug($request->title);
+
+        // Generate unique slug
+        $baseSlug = Str::slug($request->title);
+        $slug = $baseSlug;
+        $counter = 1;
+
+        while (Event::where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $counter;
+            $counter++;
+        }
+
+        $data['slug'] = $slug;
+        $data['event_time'] = date('H:i', strtotime($request->event_time));
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
@@ -103,24 +124,32 @@ class EventController extends Controller
             $event->toArray()
         );
 
-        // Add image URL to response
+        // Add image URL and formatted link to response
         if ($event->image) {
             $event->image_url = url('storage/' . $event->image);
         }
+        $event->formatted_link = $event->link ? url($event->link) : null;
 
         return response()->json([
+            'status' => 'success',
             'message' => 'Event created successfully',
-            'event' => $event
+            'data' => $event
         ], 201);
     }
 
     public function show(Event $event)
     {
-        // Add image URL to response
+        // Add image URL and formatted link to response
         if ($event->image) {
             $event->image_url = url('storage/' . $event->image);
         }
-        return response()->json($event);
+        $event->formatted_link = $event->link ? url($event->link) : null;
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Event retrieved successfully',
+            'data' => $event
+        ]);
     }
 
     public function update(Request $request, Event $event)
@@ -132,7 +161,7 @@ class EventController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
-            'event_time' => 'required',
+            'event_time' => 'required|date_format:H:i',
             'venue' => 'required|string|max:255',
             'link' => 'nullable|url|max:255',
             'status' => 'boolean',
@@ -141,12 +170,31 @@ class EventController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
         }
 
         $oldData = $event->toArray();
         $data = $request->all();
-        $data['slug'] = Str::slug($request->title);
+
+        // Generate unique slug if title has changed
+        if ($request->title !== $event->title) {
+            $baseSlug = Str::slug($request->title);
+            $slug = $baseSlug;
+            $counter = 1;
+
+            while (Event::where('slug', $slug)->where('id', '!=', $event->id)->exists()) {
+                $slug = $baseSlug . '-' . $counter;
+                $counter++;
+            }
+
+            $data['slug'] = $slug;
+        }
+
+        $data['event_time'] = date('H:i', strtotime($request->event_time));
 
         if ($request->hasFile('image')) {
             // Delete old image
@@ -170,14 +218,16 @@ class EventController extends Controller
             $event->toArray()
         );
 
-        // Add image URL to response
+        // Add image URL and formatted link to response
         if ($event->image) {
             $event->image_url = url('storage/' . $event->image);
         }
+        $event->formatted_link = $event->link ? url($event->link) : null;
 
         return response()->json([
+            'status' => 'success',
             'message' => 'Event updated successfully',
-            'event' => $event
+            'data' => $event
         ]);
     }
 
@@ -199,7 +249,9 @@ class EventController extends Controller
         );
 
         return response()->json([
-            'message' => 'Event deleted successfully'
+            'status' => 'success',
+            'message' => 'Event deleted successfully',
+            'data' => null
         ]);
     }
 
@@ -247,15 +299,17 @@ class EventController extends Controller
 
         $events = $query->paginate($request->get('per_page', 10));
 
-        // Add image URLs to each event
+        // Add image URLs and formatted link for each event
         foreach ($events as $event) {
             if ($event->image) {
                 $event->image_url = url('storage/' . $event->image);
             }
+            $event->formatted_link = $event->link ? url($event->link) : null;
         }
 
         return response()->json([
             'status' => 'success',
+            'message' => 'Public events retrieved successfully',
             'data' => $events
         ]);
     }

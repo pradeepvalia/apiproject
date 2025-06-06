@@ -12,7 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('events', function (Blueprint $table) {
-            $table->dropUnique(['title']);
+            // Check if the index exists before trying to drop it
+            if (Schema::hasIndex('events', 'events_title_unique')) {
+                $table->dropUnique(['title']);
+            }
         });
     }
 
@@ -22,7 +25,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('events', function (Blueprint $table) {
-            $table->unique('title');
+            // Only add the unique constraint if it doesn't exist
+            if (!Schema::hasIndex('events', 'events_title_unique')) {
+                $table->unique('title');
+            }
         });
     }
 };

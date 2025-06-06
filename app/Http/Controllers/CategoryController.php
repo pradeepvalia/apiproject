@@ -120,7 +120,7 @@ class CategoryController extends Controller
     {
         $query = Category::with(['galleries' => function($query) {
             $query->where('status', 'active');
-        }])->where('status', 'active');
+        }]);
 
         // Search by name or description
         if ($request->filled('search')) {

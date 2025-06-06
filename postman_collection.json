@@ -632,13 +632,13 @@
                         "method": "POST",
                         "header": [
                             {
-                                "key": "Authorization",
-                                "value": "Bearer {{token}}",
+                                "key": "Accept",
+                                "value": "application/json",
                                 "type": "text"
                             },
                             {
-                                "key": "Accept",
-                                "value": "application/json",
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
                                 "type": "text"
                             }
                         ],
@@ -647,38 +647,74 @@
                             "formdata": [
                                 {
                                     "key": "title",
-                                    "value": "Summer Event 2024",
+                                    "value": "Test Event",
                                     "type": "text",
-                                    "description": "required, max:255"
+                                    "description": "required, string, max:255"
                                 },
                                 {
                                     "key": "description",
-                                    "value": "Annual summer charity event",
+                                    "value": "This is a test event description",
                                     "type": "text",
-                                    "description": "required"
+                                    "description": "required, string"
                                 },
                                 {
-                                    "key": "event_date",
-                                    "value": "2024-06-15",
+                                    "key": "content",
+                                    "value": "This is the full content of the test event",
                                     "type": "text",
-                                    "description": "required, format: Y-m-d"
-                                },
-                                {
-                                    "key": "event_time",
-                                    "value": "14:00",
-                                    "type": "text",
-                                    "description": "required, format: H:i"
-                                },
-                                {
-                                    "key": "venue",
-                                    "value": "City Hall",
-                                    "type": "text",
-                                    "description": "required, max:255"
+                                    "description": "required, string"
                                 },
                                 {
                                     "key": "image",
                                     "type": "file",
-                                    "description": "optional, jpeg,png,jpg, max:2048KB"
+                                    "description": "required, image file (jpeg,png,jpg,gif), max:2MB"
+                                },
+                                {
+                                    "key": "start_date",
+                                    "value": "2024-06-01",
+                                    "type": "text",
+                                    "description": "required, date"
+                                },
+                                {
+                                    "key": "end_date",
+                                    "value": "2024-06-02",
+                                    "type": "text",
+                                    "description": "required, date, must be after or equal to start_date"
+                                },
+                                {
+                                    "key": "event_time",
+                                    "value": "10:00 AM",
+                                    "type": "text",
+                                    "description": "required"
+                                },
+                                {
+                                    "key": "venue",
+                                    "value": "Test Venue",
+                                    "type": "text",
+                                    "description": "required, string, max:255"
+                                },
+                                {
+                                    "key": "link",
+                                    "value": "https://example.com/event",
+                                    "type": "text",
+                                    "description": "optional, valid URL, max:255"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "1",
+                                    "type": "text",
+                                    "description": "optional, boolean"
+                                },
+                                {
+                                    "key": "featured",
+                                    "value": "0",
+                                    "type": "text",
+                                    "description": "optional, boolean"
+                                },
+                                {
+                                    "key": "event_type",
+                                    "value": "conference",
+                                    "type": "text",
+                                    "description": "required, string"
                                 }
                             ]
                         },
@@ -692,16 +728,16 @@
                 {
                     "name": "Update Event",
                     "request": {
-                        "method": "PUT",
+                        "method": "POST",
                         "header": [
-                            {
-                                "key": "Authorization",
-                                "value": "Bearer {{token}}",
-                                "type": "text"
-                            },
                             {
                                 "key": "Accept",
                                 "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
                                 "type": "text"
                             }
                         ],
@@ -709,39 +745,80 @@
                             "mode": "formdata",
                             "formdata": [
                                 {
+                                    "key": "_method",
+                                    "value": "PUT",
+                                    "type": "text"
+                                },
+                                {
                                     "key": "title",
-                                    "value": "Updated Event Title",
+                                    "value": "Updated Test Event",
                                     "type": "text",
-                                    "description": "optional, max:255"
+                                    "description": "required, string, max:255"
                                 },
                                 {
                                     "key": "description",
-                                    "value": "Updated event description",
+                                    "value": "This is an updated test event description",
                                     "type": "text",
-                                    "description": "optional"
+                                    "description": "required, string"
                                 },
                                 {
-                                    "key": "event_date",
-                                    "value": "2024-07-15",
+                                    "key": "content",
+                                    "value": "This is the updated full content of the test event",
                                     "type": "text",
-                                    "description": "optional, format: Y-m-d"
-                                },
-                                {
-                                    "key": "event_time",
-                                    "value": "15:30",
-                                    "type": "text",
-                                    "description": "optional, format: H:i"
-                                },
-                                {
-                                    "key": "venue",
-                                    "value": "Updated Venue",
-                                    "type": "text",
-                                    "description": "optional, max:255"
+                                    "description": "required, string"
                                 },
                                 {
                                     "key": "image",
                                     "type": "file",
-                                    "description": "optional, jpeg,png,jpg, max:2048KB"
+                                    "description": "optional, image file (jpeg,png,jpg,gif), max:2MB"
+                                },
+                                {
+                                    "key": "start_date",
+                                    "value": "2024-06-01",
+                                    "type": "text",
+                                    "description": "required, date"
+                                },
+                                {
+                                    "key": "end_date",
+                                    "value": "2024-06-02",
+                                    "type": "text",
+                                    "description": "required, date, must be after or equal to start_date"
+                                },
+                                {
+                                    "key": "event_time",
+                                    "value": "11:00 AM",
+                                    "type": "text",
+                                    "description": "required"
+                                },
+                                {
+                                    "key": "venue",
+                                    "value": "Updated Test Venue",
+                                    "type": "text",
+                                    "description": "required, string, max:255"
+                                },
+                                {
+                                    "key": "link",
+                                    "value": "https://example.com/updated-event",
+                                    "type": "text",
+                                    "description": "optional, valid URL, max:255"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "1",
+                                    "type": "text",
+                                    "description": "optional, boolean"
+                                },
+                                {
+                                    "key": "featured",
+                                    "value": "1",
+                                    "type": "text",
+                                    "description": "optional, boolean"
+                                },
+                                {
+                                    "key": "event_type",
+                                    "value": "conference",
+                                    "type": "text",
+                                    "description": "required, string"
                                 }
                             ]
                         },

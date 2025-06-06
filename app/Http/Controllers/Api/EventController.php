@@ -74,6 +74,7 @@ class EventController extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
             'event_time' => 'required',
             'venue' => 'required|string|max:255',
+            'link' => 'nullable|url|max:255',
             'status' => 'boolean',
             'featured' => 'boolean',
             'event_type' => 'required|string'
@@ -133,6 +134,7 @@ class EventController extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
             'event_time' => 'required',
             'venue' => 'required|string|max:255',
+            'link' => 'nullable|url|max:255',
             'status' => 'boolean',
             'featured' => 'boolean',
             'event_type' => 'required|string'

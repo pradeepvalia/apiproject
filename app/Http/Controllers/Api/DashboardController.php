@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Donation;
 use App\Models\Event;
 use App\Models\Gallery;
+use App\Models\Suggestion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -165,6 +166,11 @@ class DashboardController extends Controller
         $activeEventCount = $query(new Event)->where('status', true)->count();
         $activeGalleryCount = $query(new Gallery)->where('status', 'active')->count();
 
+        // Get suggestion counts
+        $suggestionCount = $query(new Suggestion)->count();
+        $readSuggestionCount = $query(new Suggestion)->where('is_read', true)->count();
+        $unreadSuggestionCount = $query(new Suggestion)->where('is_read', false)->count();
+
         // Get donation amount
         $donationAmount = $query(new Donation)
             ->where('status', 'completed')
@@ -186,6 +192,11 @@ class DashboardController extends Controller
                     'total_count' => $galleryCount,
                     'featured_count' => $featuredGalleryCount,
                     'active_count' => $activeGalleryCount
+                ],
+                'messages' => [
+                    'total_count' => $suggestionCount,
+                    'read_count' => $readSuggestionCount,
+                    'unread_count' => $unreadSuggestionCount
                 ],
                 'date_range' => [
                     'start_date' => $startDate,

@@ -1022,7 +1022,7 @@
                                         "email": "john@example.com",
                                         "mobile_number": "1234567890",
                                         "address": "123 Main St",
-                                        "amount": 100.00,
+                                        "amount": 100.0,
                                         "payment_method": "credit_card",
                                         "status": "completed",
                                         "transaction_id": "TRX123456",
@@ -1108,7 +1108,7 @@
                                     "email": "john@example.com",
                                     "mobile_number": "1234567890",
                                     "address": "123 Main St",
-                                    "amount": 100.00,
+                                    "amount": 100.0,
                                     "payment_method": "credit_card",
                                     "status": "pending",
                                     "transaction_id": "TRX123456",
@@ -1168,7 +1168,7 @@
                                 "email": "john@example.com",
                                 "mobile_number": "1234567890",
                                 "address": "123 Main St",
-                                "amount": 100.00,
+                                "amount": 100.0,
                                 "payment_method": "credit_card",
                                 "status": "completed",
                                 "transaction_id": "TRX123456",
@@ -1242,7 +1242,7 @@
                                     "email": "john@example.com",
                                     "mobile_number": "1234567890",
                                     "address": "123 Main St",
-                                    "amount": 100.00,
+                                    "amount": 100.0,
                                     "payment_method": "credit_card",
                                     "status": "completed",
                                     "transaction_id": "TRX123456",
@@ -1346,7 +1346,7 @@
                             ],
                             "cookie": [],
                             "body": {
-                                "total_amount": 1000.00,
+                                "total_amount": 1000.0,
                                 "total_donations": 10
                             }
                         }
@@ -1402,7 +1402,7 @@
                                     "email": "john@example.com",
                                     "mobile_number": "1234567890",
                                     "address": "123 Main St",
-                                    "amount": 100.00,
+                                    "amount": 100.0,
                                     "payment_method": "credit_card",
                                     "status": "completed",
                                     "transaction_id": "TRX123456",
@@ -1938,6 +1938,48 @@
                             ]
                         }
                     }
+                },
+                {
+                    "name": "Get Dashboard Counts",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/dashboard/counts",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "dashboard", "counts"]
+                        },
+                        "description": "Get various counts for the dashboard"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/dashboard/counts"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"total_users\": 100,\n    \"total_events\": 25,\n    \"total_donations\": 150,\n    \"total_galleries\": 30,\n    \"total_categories\": 10,\n    \"total_libraries\": 20,\n    \"total_suggestions\": 15\n}"
+                        }
+                    ]
                 }
             ]
         },
@@ -2385,7 +2427,12 @@
                         "url": {
                             "raw": "{{base_url}}/api/suggestions/1/mark-as-unread",
                             "host": ["{{base_url}}"],
-                            "path": ["api", "suggestions", "1", "mark-as-unread"]
+                            "path": [
+                                "api",
+                                "suggestions",
+                                "1",
+                                "mark-as-unread"
+                            ]
                         },
                         "description": "Mark a suggestion as unread"
                     },
@@ -3097,6 +3144,240 @@
                             "header": [],
                             "cookie": [],
                             "body": "{\n    \"status\": \"success\",\n    \"data\": [\n        \"created\",\n        \"updated\",\n        \"deleted\"\n    ]\n}"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Events Gallery",
+            "description": "Endpoints for managing event gallery",
+            "item": [
+                {
+                    "name": "List Events Gallery",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/events/gallery?search=&status=&date_from=&date_to=&per_page=10",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "events", "gallery"],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "description": "Search in title, description, and location"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "",
+                                    "description": "Filter by event status"
+                                },
+                                {
+                                    "key": "date_from",
+                                    "value": "",
+                                    "description": "Filter by start date (Y-m-d)"
+                                },
+                                {
+                                    "key": "date_to",
+                                    "value": "",
+                                    "description": "Filter by end date (Y-m-d)"
+                                },
+                                {
+                                    "key": "per_page",
+                                    "value": "10",
+                                    "description": "Items per page"
+                                }
+                            ]
+                        },
+                        "description": "Get list of events with gallery images"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/events/gallery"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"data\": [\n        {\n            \"id\": 1,\n            \"title\": \"Event Title\",\n            \"description\": \"Event Description\",\n            \"event_date\": \"2024-05-25\",\n            \"event_time\": \"14:00\",\n            \"venue\": \"Event Venue\",\n            \"image_url\": \"http://example.com/images/event.jpg\",\n            \"gallery\": [\n                {\n                    \"id\": 1,\n                    \"image_url\": \"http://example.com/images/gallery1.jpg\",\n                    \"caption\": \"Gallery Image 1\"\n                }\n            ],\n            \"created_at\": \"2024-05-25T11:00:00.000000Z\",\n            \"updated_at\": \"2024-05-25T11:00:00.000000Z\"\n        }\n    ],\n    \"meta\": {\n        \"current_page\": 1,\n        \"per_page\": 10,\n        \"total\": 1,\n        \"last_page\": 1\n    }\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Upload Gallery Image",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "event_id",
+                                    "value": "1",
+                                    "type": "text",
+                                    "description": "ID of the event"
+                                },
+                                {
+                                    "key": "image",
+                                    "type": "file",
+                                    "src": "/path/to/image.jpg",
+                                    "description": "Gallery image (jpeg, png, jpg, max 2MB)"
+                                },
+                                {
+                                    "key": "caption",
+                                    "value": "Gallery Image Caption",
+                                    "type": "text",
+                                    "description": "Optional caption for the image"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/events/gallery",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "events", "gallery"]
+                        },
+                        "description": "Upload a new image to event gallery"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": []
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/events/gallery"
+                                }
+                            },
+                            "status": "Created",
+                            "code": 201,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"message\": \"Gallery image uploaded successfully\",\n    \"data\": {\n        \"id\": 1,\n        \"event_id\": 1,\n        \"image_url\": \"http://example.com/images/gallery1.jpg\",\n        \"caption\": \"Gallery Image Caption\",\n        \"created_at\": \"2024-05-25T11:00:00.000000Z\",\n        \"updated_at\": \"2024-05-25T11:00:00.000000Z\"\n    }\n}"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Dashboard",
+            "description": "Dashboard statistics and analytics endpoints",
+            "item": [
+                {
+                    "name": "Get Dashboard Statistics",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/dashboard/statistics",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "dashboard", "statistics"]
+                        },
+                        "description": "Get dashboard statistics and analytics"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/dashboard/statistics"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"total_events\": 10,\n    \"upcoming_events\": 5,\n    \"total_donations\": 15000.00,\n    \"total_donors\": 50,\n    \"recent_activities\": [\n        {\n            \"id\": 1,\n            \"type\": \"event_created\",\n            \"description\": \"New event created: Event Title\",\n            \"created_at\": \"2024-05-25T11:00:00.000000Z\"\n        },\n        {\n            \"id\": 2,\n            \"type\": \"donation_received\",\n            \"description\": \"Received donation of $100 from John Doe\",\n            \"created_at\": \"2024-05-25T10:30:00.000000Z\"\n        }\n    ],\n    \"monthly_donations\": [\n        {\n            \"month\": \"January\",\n            \"amount\": 5000.00\n        },\n        {\n            \"month\": \"February\",\n            \"amount\": 7500.00\n        }\n    ]\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Event Analytics",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/dashboard/event-analytics",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "dashboard", "event-analytics"]
+                        },
+                        "description": "Get event-specific analytics and statistics"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/dashboard/event-analytics"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"total_events\": 10,\n    \"active_events\": 5,\n    \"completed_events\": 3,\n    \"upcoming_events\": 2,\n    \"event_categories\": [\n        {\n            \"category\": \"Fundraising\",\n            \"count\": 4\n        },\n        {\n            \"category\": \"Awareness\",\n            \"count\": 3\n        },\n        {\n            \"category\": \"Community\",\n            \"count\": 3\n        }\n    ],\n    \"event_attendance\": [\n        {\n            \"event_id\": 1,\n            \"title\": \"Event Title\",\n            \"total_registrations\": 100,\n            \"actual_attendance\": 80,\n            \"attendance_rate\": 80\n        }\n    ]\n}"
                         }
                     ]
                 }

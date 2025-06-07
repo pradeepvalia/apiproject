@@ -8,6 +8,25 @@ use Illuminate\Http\Request;
 
 class ActivityLogController extends Controller
 {
+    private function processFileUrls($data)
+    {
+        if (is_array($data)) {
+            foreach ($data as $key => $value) {
+                if (is_array($value)) {
+                    $data[$key] = $this->processFileUrls($value);
+                } else {
+                    // Check for common file path fields and ensure value contains a file extension
+                    if (in_array($key, ['image', 'image_path', 'file_path']) &&
+                        $value &&
+                        preg_match('/\.(jpg|jpeg|png|gif|pdf|doc|docx|xls|xlsx|txt)$/i', $value)) {
+                        $data[$key] = url('storage/' . $value);
+                    }
+                }
+            }
+        }
+        return $data;
+    }
+
     public function index(Request $request)
     {
         $query = ActivityLog::with('user');
@@ -51,6 +70,16 @@ class ActivityLogController extends Controller
         $perPage = $request->get('per_page', 15);
         $logs = $query->paginate($perPage);
 
+        // Process file URLs in old_values and new_values
+        foreach ($logs->items() as $log) {
+            if ($log->old_values) {
+                $log->old_values = $this->processFileUrls($log->old_values);
+            }
+            if ($log->new_values) {
+                $log->new_values = $this->processFileUrls($log->new_values);
+            }
+        }
+
         return response()->json([
             'status' => 'success',
             'data' => $logs
@@ -59,6 +88,14 @@ class ActivityLogController extends Controller
 
     public function show(ActivityLog $activityLog)
     {
+        // Process file URLs in old_values and new_values
+        if ($activityLog->old_values) {
+            $activityLog->old_values = $this->processFileUrls($activityLog->old_values);
+        }
+        if ($activityLog->new_values) {
+            $activityLog->new_values = $this->processFileUrls($activityLog->new_values);
+        }
+
         return response()->json([
             'status' => 'success',
             'data' => $activityLog->load('user')

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Donation;
+use App\Models\Event;
+use App\Models\Gallery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -129,5 +131,67 @@ class DashboardController extends Controller
             ->get();
 
         return response()->json($recentDonations);
+    }
+
+    public function getCounts(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        $query = function($model) use ($startDate, $endDate) {
+            $query = $model::query();
+
+            if ($startDate) {
+                $query->whereDate('created_at', '>=', $startDate);
+            }
+
+            if ($endDate) {
+                $query->whereDate('created_at', '<=', $endDate);
+            }
+
+            return $query;
+        };
+
+        // Get counts for each model
+        $donationCount = $query(new Donation)->count();
+        $eventCount = $query(new Event)->count();
+        $galleryCount = $query(new Gallery)->count();
+
+        // Get featured counts
+        $featuredEventCount = $query(new Event)->where('featured', true)->count();
+        $featuredGalleryCount = $query(new Gallery)->where('featured', true)->count();
+
+        // Get active counts
+        $activeEventCount = $query(new Event)->where('status', true)->count();
+        $activeGalleryCount = $query(new Gallery)->where('status', 'active')->count();
+
+        // Get donation amount
+        $donationAmount = $query(new Donation)
+            ->where('status', 'completed')
+            ->sum('amount');
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'donations' => [
+                    'total_count' => $donationCount,
+                    'total_amount' => $donationAmount
+                ],
+                'events' => [
+                    'total_count' => $eventCount,
+                    'featured_count' => $featuredEventCount,
+                    'active_count' => $activeEventCount
+                ],
+                'galleries' => [
+                    'total_count' => $galleryCount,
+                    'featured_count' => $featuredGalleryCount,
+                    'active_count' => $activeGalleryCount
+                ],
+                'date_range' => [
+                    'start_date' => $startDate,
+                    'end_date' => $endDate
+                ]
+            ]
+        ]);
     }
 }

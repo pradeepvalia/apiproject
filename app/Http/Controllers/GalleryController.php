@@ -33,6 +33,11 @@ class GalleryController extends Controller
             $query->where('status', $request->status);
         }
 
+        // Only apply featured filter if featured is provided
+        if ($request->filled('featured')) {
+            $query->where('featured', $request->featured);
+        }
+
         // Sort by
         $sortBy = $request->get('sort_by', 'created_at');
         $sortDirection = $request->get('sort_direction', 'desc');
@@ -57,6 +62,7 @@ class GalleryController extends Controller
             'description' => 'nullable|string',
             'category_id' => 'required|exists:categories,id',
             'status' => 'required|in:active,inactive',
+            'featured' => 'boolean',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
@@ -109,6 +115,7 @@ class GalleryController extends Controller
             'description' => 'nullable|string',
             'category_id' => 'required|exists:categories,id',
             'status' => 'required|in:active,inactive',
+            'featured' => 'boolean',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
@@ -193,6 +200,11 @@ class GalleryController extends Controller
         // Only apply category filter if category_id is provided and not empty
         if ($request->filled('category_id')) {
             $query->where('category_id', $request->category_id);
+        }
+
+        // Only apply featured filter if featured is provided
+        if ($request->filled('featured')) {
+            $query->where('featured', $request->featured);
         }
 
         // Sort by

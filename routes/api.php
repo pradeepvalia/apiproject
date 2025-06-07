@@ -92,6 +92,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/daily-stats', [DashboardController::class, 'getDailyStats']);
         Route::get('/payment-methods', [DashboardController::class, 'getPaymentMethodStats']);
         Route::get('/recent-donations', [DashboardController::class, 'getRecentDonations']);
+        Route::get('/counts', [DashboardController::class, 'getCounts']);
     });
 
     // Gallery routes (except index)

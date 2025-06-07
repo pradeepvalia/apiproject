@@ -31,6 +31,11 @@ class EventController extends Controller
             $query->where('status', $request->status);
         }
 
+        // Only apply featured filter if featured is provided
+        if ($request->filled('featured')) {
+            $query->where('featured', $request->featured);
+        }
+
         // Only apply date filter if date_from is provided and not empty
         if ($request->filled('date_from')) {
             $query->whereDate('start_date', '>=', $request->date_from);
@@ -265,6 +270,11 @@ class EventController extends Controller
         } else {
             // Default to active events if no status is provided
             $query->where('status', 1);
+        }
+
+        // Only apply featured filter if featured is provided
+        if ($request->filled('featured')) {
+            $query->where('featured', $request->featured);
         }
 
         // Only apply date filter if date_from is provided and not empty

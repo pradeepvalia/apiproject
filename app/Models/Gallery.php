@@ -15,11 +15,13 @@ class Gallery extends Model
         'description',
         'image_path',
         'category_id',
-        'status'
+        'status',
+        'featured'
     ];
 
     protected $casts = [
-        'status' => 'string'
+        'status' => 'string',
+        'featured' => 'boolean'
     ];
 
     public function category()

@@ -58,11 +58,15 @@ class EventController extends Controller
 
         $events = $query->paginate($request->get('per_page', 10));
 
-        // Add image URLs and format link for each event
+        // Add photos URLs and format link for each event
         foreach ($events as $event) {
-            if ($event->image) {
-                $event->image_url = url('storage/' . $event->image);
+            // Add URLs for all photos
+            if ($event->photos) {
+                $event->photos_urls = array_map(function($photo) {
+                    return url('storage/' . $photo);
+                }, $event->photos);
             }
+
             $event->formatted_link = $event->link ? url($event->link) : null;
         }
 
@@ -79,7 +83,8 @@ class EventController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'content' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'photos' => 'required|array|min:1',
+            'photos.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'event_time' => 'required|date_format:H:i',
@@ -113,12 +118,16 @@ class EventController extends Controller
         $data['slug'] = $slug;
         $data['event_time'] = date('H:i', strtotime($request->event_time));
 
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->storeAs('public/events', $imageName);
-            $data['image'] = 'events/' . $imageName;
+        // Handle multiple photos upload
+        $photos = [];
+        if ($request->hasFile('photos')) {
+            foreach ($request->file('photos') as $photo) {
+                $photoName = time() . '_' . uniqid() . '.' . $photo->getClientOriginalExtension();
+                $photo->storeAs('public/events/photos', $photoName);
+                $photos[] = 'events/photos/' . $photoName;
+            }
         }
+        $data['photos'] = $photos;
 
         $event = Event::create($data);
 
@@ -129,10 +138,13 @@ class EventController extends Controller
             $event->toArray()
         );
 
-        // Add image URL and formatted link to response
-        if ($event->image) {
-            $event->image_url = url('storage/' . $event->image);
+        // Add photos URLs and formatted link to response
+        if ($event->photos) {
+            $event->photos_urls = array_map(function($photo) {
+                return url('storage/' . $photo);
+            }, $event->photos);
         }
+
         $event->formatted_link = $event->link ? url($event->link) : null;
 
         return response()->json([
@@ -144,10 +156,13 @@ class EventController extends Controller
 
     public function show(Event $event)
     {
-        // Add image URL and formatted link to response
-        if ($event->image) {
-            $event->image_url = url('storage/' . $event->image);
+        // Add photos URLs and formatted link to response
+        if ($event->photos) {
+            $event->photos_urls = array_map(function($photo) {
+                return url('storage/' . $photo);
+            }, $event->photos);
         }
+
         $event->formatted_link = $event->link ? url($event->link) : null;
 
         return response()->json([
@@ -163,7 +178,8 @@ class EventController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'content' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'photos' => 'required|array|min:1',
+            'photos.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'event_time' => 'required|date_format:H:i',
@@ -201,16 +217,22 @@ class EventController extends Controller
 
         $data['event_time'] = date('H:i', strtotime($request->event_time));
 
-        if ($request->hasFile('image')) {
-            // Delete old image
-            if ($event->image) {
-                Storage::delete('public/' . $event->image);
+        // Handle multiple photos upload
+        if ($request->hasFile('photos')) {
+            // Delete old photos
+            if ($event->photos) {
+                foreach ($event->photos as $photo) {
+                    Storage::delete('public/' . $photo);
+                }
             }
 
-            $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->storeAs('public/events', $imageName);
-            $data['image'] = 'events/' . $imageName;
+            $photos = [];
+            foreach ($request->file('photos') as $photo) {
+                $photoName = time() . '_' . uniqid() . '.' . $photo->getClientOriginalExtension();
+                $photo->storeAs('public/events/photos', $photoName);
+                $photos[] = 'events/photos/' . $photoName;
+            }
+            $data['photos'] = $photos;
         }
 
         $event->update($data);
@@ -223,10 +245,13 @@ class EventController extends Controller
             $event->toArray()
         );
 
-        // Add image URL and formatted link to response
-        if ($event->image) {
-            $event->image_url = url('storage/' . $event->image);
+        // Add photos URLs and formatted link to response
+        if ($event->photos) {
+            $event->photos_urls = array_map(function($photo) {
+                return url('storage/' . $photo);
+            }, $event->photos);
         }
+
         $event->formatted_link = $event->link ? url($event->link) : null;
 
         return response()->json([
@@ -240,8 +265,11 @@ class EventController extends Controller
     {
         $eventData = $event->toArray();
 
-        if ($event->image) {
-            Storage::delete('public/' . $event->image);
+        // Delete all photos
+        if ($event->photos) {
+            foreach ($event->photos as $photo) {
+                Storage::delete('public/' . $photo);
+            }
         }
 
         $event->delete();
@@ -309,11 +337,15 @@ class EventController extends Controller
 
         $events = $query->paginate($request->get('per_page', 10));
 
-        // Add image URLs and formatted link for each event
+        // Add photos URLs and formatted link for each event
         foreach ($events as $event) {
-            if ($event->image) {
-                $event->image_url = url('storage/' . $event->image);
+            // Add URLs for all photos
+            if ($event->photos) {
+                $event->photos_urls = array_map(function($photo) {
+                    return url('storage/' . $photo);
+                }, $event->photos);
             }
+
             $event->formatted_link = $event->link ? url($event->link) : null;
         }
 

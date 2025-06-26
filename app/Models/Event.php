@@ -15,7 +15,7 @@ class Event extends Model
         'slug',
         'description',
         'content',
-        'image',
+        'photos',
         'start_date',
         'end_date',
         'event_time',
@@ -30,6 +30,7 @@ class Event extends Model
         'start_date' => 'date',
         'end_date' => 'date',
         'status' => 'boolean',
-        'featured' => 'boolean'
+        'featured' => 'boolean',
+        'photos' => 'array'
     ];
 }

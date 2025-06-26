@@ -43,9 +43,28 @@ class UserController extends Controller
 
         // Pagination
         $perPage = $request->get('per_page', 10);
-        $users = $query->paginate($perPage);
-
-        return response()->json($users);
+        $users = $query->get()->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'address' => $user->address,
+                'role' => $user->role,
+                'is_active' => $user->is_active,
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
+            ];
+        });
+        $page = $request->get('page', 1);
+        $paginated = new \Illuminate\Pagination\LengthAwarePaginator(
+            $users->forPage($page, $perPage),
+            $users->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+        return response()->json($paginated);
     }
 
     public function store(Request $request)

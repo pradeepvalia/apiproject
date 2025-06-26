@@ -38,7 +38,7 @@ class LibraryController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'file' => 'required|file|max:10240' // 10MB max
+            'file' => 'required|file'
         ]);
 
         if ($request->hasFile('file')) {
@@ -106,7 +106,7 @@ class LibraryController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'file' => 'nullable|file|max:10240' // 10MB max
+            'file' => 'nullable|file'
         ]);
 
         $oldData = $library->toArray();

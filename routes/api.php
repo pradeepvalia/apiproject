@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\EncryptionController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\LibraryController;
 use App\Http\Controllers\Api\ActivityLogController;
+use App\Http\Controllers\VisitorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -124,5 +125,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{activityLog}', [ActivityLogController::class, 'show']);
         Route::get('/modules/list', [ActivityLogController::class, 'getModules']);
         Route::get('/actions/list', [ActivityLogController::class, 'getActions']);
+    });
+
+    // Visitor Tracking API
+    Route::prefix('visitors')->group(function () {
+        Route::post('track', [VisitorController::class, 'track']);
+        Route::get('stats', [VisitorController::class, 'stats']);
+        Route::get('daily-stats', [VisitorController::class, 'dailyStats']);
+        Route::get('top-pages', [VisitorController::class, 'topPages']);
     });
 });

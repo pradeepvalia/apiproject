@@ -52,6 +52,13 @@ Route::get('/libraries', [LibraryController::class, 'index']);
 Route::get('/libraries/{library}', [LibraryController::class, 'show']);
 Route::get('/libraries/{library}/download', [LibraryController::class, 'download']);
 
+Route::prefix('visitors')->group(function () {
+        Route::post('track', [VisitorController::class, 'track']);
+        Route::get('stats', [VisitorController::class, 'stats']);
+        Route::get('daily-stats', [VisitorController::class, 'dailyStats']);
+        Route::get('top-pages', [VisitorController::class, 'topPages']);
+    });
+    
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -128,10 +135,5 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Visitor Tracking API
-    Route::prefix('visitors')->group(function () {
-        Route::post('track', [VisitorController::class, 'track']);
-        Route::get('stats', [VisitorController::class, 'stats']);
-        Route::get('daily-stats', [VisitorController::class, 'dailyStats']);
-        Route::get('top-pages', [VisitorController::class, 'topPages']);
-    });
+    
 });

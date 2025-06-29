@@ -800,19 +800,21 @@
                                     "description": "required, string"
                                 },
                                 {
-                                    "key": "photos[]",
-                                    "type": "file",
-                                    "description": "required, at least 1 photo, image file (jpeg,png,jpg,gif), max:2MB each"
+                                    "key": "existing_photos[]",
+                                    "value": "events/photos/photo1.jpg",
+                                    "type": "text",
+                                    "description": "Optional. Path of an existing photo to keep. Repeat for each photo you want to keep. Example: events/photos/photo1.jpg. If you want to remove a photo, do not include its path."
                                 },
                                 {
-                                    "key": "photos[]",
-                                    "type": "file",
-                                    "description": "additional photo (optional)"
+                                    "key": "existing_photos[]",
+                                    "value": "events/photos/photo2.jpg",
+                                    "type": "text",
+                                    "description": "Optional. Add more for each existing photo you want to keep."
                                 },
                                 {
-                                    "key": "photos[]",
+                                    "key": "new_photos[]",
                                     "type": "file",
-                                    "description": "additional photo (optional)"
+                                    "description": "Optional. Upload new photo(s) to add. Image file (jpeg, png, jpg, gif), max:2MB each. Repeat for multiple new photos."
                                 },
                                 {
                                     "key": "start_date",
@@ -828,9 +830,9 @@
                                 },
                                 {
                                     "key": "event_time",
-                                    "value": "11:00 AM",
+                                    "value": "11:00",
                                     "type": "text",
-                                    "description": "required"
+                                    "description": "required, format: HH:mm (24-hour)"
                                 },
                                 {
                                     "key": "venue",
@@ -862,36 +864,38 @@
                                     "type": "text",
                                     "description": "required, string"
                                 }
-                            ]
+                            ],
+                            "description": "At least one photo is required: either keep an existing photo (existing_photos[]) or upload a new one (new_photos[]). If both are empty, the request will fail."
                         },
                         "url": {
                             "raw": "{{base_url}}/api/events/{id}",
                             "host": ["{{base_url}}"],
                             "path": ["api", "events", "{id}"]
-                        },
-                        "response": [
-                            {
-                                "name": "Success Response",
-                                "originalRequest": {
-                                    "method": "POST",
-                                    "header": [],
-                                    "body": {
-                                        "mode": "formdata",
-                                        "formdata": []
-                                    },
-                                    "url": {
-                                        "raw": "{{base_url}}/api/events/1"
-                                    }
-                                },
-                                "status": "OK",
-                                "code": 200,
-                                "_postman_previewlanguage": "json",
+                        }
+                    },
+                    "response": [
+                        {
+                            "name": "Success Response",
+                            "originalRequest": {
+                                "method": "POST",
                                 "header": [],
-                                "cookie": [],
-                                "body": "{\n    \"status\": \"success\",\n    \"message\": \"Event updated successfully\",\n    \"data\": {\n        \"id\": 1,\n        \"title\": \"Updated Test Event\",\n        \"slug\": \"updated-test-event\",\n        \"description\": \"This is an updated test event description\",\n        \"content\": \"This is the updated full content of the test event\",\n        \"photos\": [\"events/photos/photo1.jpg\", \"events/photos/photo2.jpg\", \"events/photos/photo3.jpg\"],\n        \"photos_urls\": [\n            \"http://your-domain.com/storage/events/photos/photo1.jpg\",\n            \"http://your-domain.com/storage/events/photos/photo2.jpg\",\n            \"http://your-domain.com/storage/events/photos/photo3.jpg\"\n        ],\n        \"start_date\": \"2024-06-01\",\n        \"end_date\": \"2024-06-02\",\n        \"event_time\": \"11:00:00\",\n        \"venue\": \"Updated Test Venue\",\n        \"link\": \"https://example.com/updated-event\",\n        \"status\": 1,\n        \"featured\": 1,\n        \"event_type\": \"conference\",\n        \"created_at\": \"2024-06-21T05:15:00.000000Z\",\n        \"updated_at\": \"2024-06-21T05:20:00.000000Z\"\n    }\n}"
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": []
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/events/1"
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [],
+                            "cookie": [],
+                            "body": "{\n    \"status\": \"success\",\n    \"message\": \"Event updated successfully\",\n    \"data\": {\n        \"id\": 1,\n        \"title\": \"Updated Test Event\",\n        \"slug\": \"updated-test-event\",\n        \"description\": \"This is an updated test event description\",\n        \"content\": \"This is the updated full content of the test event\",\n        \"photos\": [\"events/photos/photo1.jpg\", \"events/photos/photo2.jpg\", \"events/photos/photo3.jpg\"],\n        \"photos_urls\": [\n            \"http://your-domain.com/storage/events/photos/photo1.jpg\",\n            \"http://your-domain.com/storage/events/photos/photo2.jpg\",\n            \"http://your-domain.com/storage/events/photos/photo3.jpg\"\n        ],\n        \"start_date\": \"2024-06-01\",\n        \"end_date\": \"2024-06-02\",\n        \"event_time\": \"11:00:00\",\n        \"venue\": \"Updated Test Venue\",\n        \"link\": \"https://example.com/updated-event\",\n        \"status\": 1,\n        \"featured\": 1,\n        \"event_type\": \"conference\",\n        \"created_at\": \"2024-06-21T05:15:00.000000Z\",\n        \"updated_at\": \"2024-06-21T05:20:00.000000Z\"\n    }\n}"
                             }
                         ]
-                    }
+                    ]
                 },
                 {
                     "name": "Delete Event",

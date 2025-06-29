@@ -69,6 +69,16 @@ class AuthController extends Controller
             }
 
             $user = User::where('email', $validated['email'])->firstOrFail();
+
+            // Check if user is active
+            if (!$user->is_active) {
+                // Logout the user since they shouldn't be authenticated
+                Auth::logout();
+                throw ValidationException::withMessages([
+                    'email' => ['Your account has been deactivated. Please contact administrator.'],
+                ]);
+            }
+
             $token = $user->createToken('auth_token')->plainTextToken;
 
             return response()->json([

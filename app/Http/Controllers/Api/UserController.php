@@ -75,7 +75,7 @@ class UserController extends Controller
             'password' => 'required|string|min:8|confirmed',
             'phone' => 'required|string|max:20',
             'address' => 'required|string|max:255',
-            'role' => 'required|string|in:admin,user',
+            'role' => 'nullable|string|in:admin,user',
             'is_active' => 'boolean'
         ]);
 
@@ -89,7 +89,7 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
             'phone' => $request->phone,
             'address' => $request->address,
-            'role' => $request->role,
+            'role' => $request->role ?? 'admin',
             'is_active' => $request->is_active ?? true
         ]);
 
@@ -118,7 +118,7 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'phone' => 'required|string|max:20',
             'address' => 'required|string|max:255',
-            'role' => 'required|string|in:admin,user',
+            'role' => 'nullable|string|in:admin,user',
             'is_active' => 'boolean',
             'password' => 'nullable|string|min:8|confirmed'
         ]);
@@ -132,6 +132,11 @@ class UserController extends Controller
 
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
+        }
+
+        // Set default role to 'admin' if not provided
+        if (!isset($data['role'])) {
+            $data['role'] = 'admin';
         }
 
         $user->update($data);

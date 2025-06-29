@@ -3160,6 +3160,84 @@
                     ]
                 }
             ]
+        },
+        {
+            "name": "Visitor Tracking",
+            "description": "Visitor tracking and analytics endpoints",
+            "item": [
+                {
+                    "name": "Track Visitor",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+                            { "key": "Content-Type", "value": "application/json", "type": "text" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"page\": \"/about\",\n  \"userAgent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36...\",\n  \"screenResolution\": \"1920x1080\",\n  \"language\": \"en-US\",\n  \"timezone\": \"Asia/Kolkata\",\n  \"referrer\": \"https://google.com\",\n  \"timestamp\": \"2024-01-15T10:30:00.000Z\",\n  \"sessionId\": \"session_1705312200000_abc123def\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/visitors/track",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "visitors", "track"]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Visitor Statistics",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/visitors/stats?date_from=2024-01-01&date_to=2024-01-31&period=month",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "visitors", "stats"],
+                            "query": [
+                                { "key": "date_from", "value": "2024-01-01" },
+                                { "key": "date_to", "value": "2024-01-31" },
+                                { "key": "period", "value": "month" }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Daily Statistics",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/visitors/daily-stats?days=30",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "visitors", "daily-stats"],
+                            "query": [
+                                { "key": "days", "value": "30" }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Top Pages",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/visitors/top-pages?limit=10",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "visitors", "top-pages"],
+                            "query": [
+                                { "key": "limit", "value": "10" }
+                            ]
+                        }
+                    }
+                }
+            ]
         }
     ],
     "variable": [

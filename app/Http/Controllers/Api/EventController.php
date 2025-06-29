@@ -178,8 +178,10 @@ class EventController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'content' => 'required|string',
-            'photos' => 'required|array|min:1',
-            'photos.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'existing_photos' => 'nullable|array',
+            'existing_photos.*' => 'string',
+            'new_photos' => 'nullable|array',
+            'new_photos.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'event_time' => 'required|date_format:H:i',
@@ -195,6 +197,19 @@ class EventController extends Controller
                 'status' => 'error',
                 'message' => 'Validation failed',
                 'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // Custom validation: at least one photo is required
+        $existingPhotos = $request->input('existing_photos', []);
+        $hasNewPhotos = $request->hasFile('new_photos') && count($request->file('new_photos')) > 0;
+        if (empty($existingPhotos) && !$hasNewPhotos) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation failed',
+                'errors' => [
+                    'photos' => ['At least one photo is required.']
+                ]
             ], 422);
         }
 
@@ -217,23 +232,31 @@ class EventController extends Controller
 
         $data['event_time'] = date('H:i', strtotime($request->event_time));
 
-        // Handle multiple photos upload
-        if ($request->hasFile('photos')) {
-            // Delete old photos
-            if ($event->photos) {
-                foreach ($event->photos as $photo) {
-                    Storage::delete('public/' . $photo);
-                }
-            }
+        // Handle existing photos
+        $existingPhotos = $request->input('existing_photos', []);
+        $currentPhotos = $event->photos ?: [];
 
-            $photos = [];
-            foreach ($request->file('photos') as $photo) {
+        // Find photos to delete (photos that exist in current but not in existing_photos)
+        $photosToDelete = array_diff($currentPhotos, $existingPhotos);
+
+        // Delete removed photos from storage
+        foreach ($photosToDelete as $photoToDelete) {
+            Storage::delete('public/' . $photoToDelete);
+        }
+
+        // Handle new photos upload
+        $newPhotos = [];
+        if ($request->hasFile('new_photos')) {
+            foreach ($request->file('new_photos') as $photo) {
                 $photoName = time() . '_' . uniqid() . '.' . $photo->getClientOriginalExtension();
                 $photo->storeAs('public/events/photos', $photoName);
-                $photos[] = 'events/photos/' . $photoName;
+                $newPhotos[] = 'events/photos/' . $photoName;
             }
-            $data['photos'] = $photos;
         }
+
+        // Combine existing and new photos
+        $allPhotos = array_merge($existingPhotos, $newPhotos);
+        $data['photos'] = $allPhotos;
 
         $event->update($data);
 

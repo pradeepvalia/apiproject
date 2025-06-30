@@ -47,11 +47,35 @@ class VisitorController extends Controller
     // 2. Get Visitor Statistics
     public function stats(Request $request)
     {
-        // TODO: Implement statistics aggregation logic
+        // Total visits
+        $totalVisits = Visitor::count();
+        // Unique sessions
+        $uniqueSessions = Visitor::distinct('session_id')->count('session_id');
+        // Unique visitors by IP
+        $uniqueVisitors = Visitor::distinct('ip_address')->count('ip_address');
+        // Top languages
+        $topLanguages = Visitor::select('language', DB::raw('count(*) as count'))
+            ->whereNotNull('language')
+            ->groupBy('language')
+            ->orderByDesc('count')
+            ->limit(5)
+            ->get();
+        // Top timezones
+        $topTimezones = Visitor::select('timezone', DB::raw('count(*) as count'))
+            ->whereNotNull('timezone')
+            ->groupBy('timezone')
+            ->orderByDesc('count')
+            ->limit(5)
+            ->get();
+
         return response()->json([
             'status' => 'success',
             'data' => [
-                // Fill with actual statistics
+                'total_visits' => $totalVisits,
+                'unique_sessions' => $uniqueSessions,
+                'unique_visitors' => $uniqueVisitors,
+                'top_languages' => $topLanguages,
+                'top_timezones' => $topTimezones,
             ]
         ]);
     }
@@ -59,24 +83,32 @@ class VisitorController extends Controller
     // 3. Get Daily Statistics
     public function dailyStats(Request $request)
     {
-        // TODO: Implement daily stats logic
+        // Get daily visit counts for the last 30 days
+        $dailyStats = Visitor::select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as visits'))
+            ->where('created_at', '>=', now()->subDays(30))
+            ->groupBy(DB::raw('DATE(created_at)'))
+            ->orderBy('date', 'asc')
+            ->get();
+
         return response()->json([
             'status' => 'success',
-            'data' => [
-                // Fill with actual daily stats
-            ]
+            'data' => $dailyStats
         ]);
     }
 
     // 4. Get Top Pages
     public function topPages(Request $request)
     {
-        // TODO: Implement top pages logic
+        // Get top 10 most visited pages
+        $topPages = Visitor::select('page', DB::raw('count(*) as visits'))
+            ->groupBy('page')
+            ->orderByDesc('visits')
+            ->limit(10)
+            ->get();
+
         return response()->json([
             'status' => 'success',
-            'data' => [
-                // Fill with actual top pages
-            ]
+            'data' => $topPages
         ]);
     }
 }
